@@ -1,6 +1,6 @@
 <template>
     <div class="Game">
-        <Chessboard align="center" @onEnd="onEnd" ori="white" :fen="curfen"/>
+        <Chessboard align="center" @onEnd="onEnd" ref="board"/>
         
         <v-dialog v-model="dialog" width="500">
             <!-- <template v-slot:activator="{ on, attrs }">
@@ -30,9 +30,16 @@
                 <v-btn
                     color="primary"
                     text
-                    @click="playAgain"
+                    @click="playAgain('white')"
                 >
-                    Play again
+                    Play again as White
+                </v-btn>
+                <v-btn
+                    color="primary"
+                    text
+                    @click="playAgain('black')"
+                >
+                    Play again as Black
                 </v-btn>
                 </v-card-actions>
             </v-card>
@@ -63,22 +70,25 @@ import Chessboard from "../components/Chessboard.vue";
 export default Vue.extend({
     name: "GameView",
     components: { Chessboard },
-    data: {
-        dialog: false, 
-        won: false, 
-        curfen:"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"
-    },
+    data: () => ({
+        dialog: false,
+        won: true,
+        ori: 'white'
+    }),
 
     methods: {
-        onEnd: function(win) {
+        onEnd(win) {
             this.dialog = true;
-            this.won = win;
+            this.won = (this.ori == win);
         },
 
-        playAgain() {
+        playAgain(ori) {
+            this.ori = ori;
+            this.$refs.board.reloadBoard(ori)
             this.dialog = false;
-            this.curfen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         }
     },
+
+    mounted() {this.$refs.board.reloadBoard("white");}
 });
 </script>

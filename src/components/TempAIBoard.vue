@@ -9,11 +9,14 @@ export default {
             this.game.undo();
             this.board.set({ fen: this.game.fen() });
         },
+        
         userPlay() {
             return (orig, dest) => {
                 if (this.isPromotion(orig, dest)) {
                     this.promoteTo = this.onPromotion();
                 }
+
+
                 this.game.move({
                     from: orig,
                     to: dest,
@@ -28,6 +31,7 @@ export default {
                 this.aiNextMove();
             };
         },
+
         aiNextMove() {
             let moves = this.game.moves({ verbose: true });
             let randomMove = moves[Math.floor(Math.random() * moves.length)];
@@ -39,15 +43,17 @@ export default {
                     color: this.toColor(),
                     dests: this.possibleMoves(),
                     events: { after: this.userPlay() },
-                },
+                },  
             });
         },
     },
+
     mounted() {
         this.board.set({
             movable: { events: { after: this.userPlay() } },
         });
     },
+    
     created() {
         // bus.$on("undo", () => {
         //     this.undo();
