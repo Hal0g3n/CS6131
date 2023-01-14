@@ -38,8 +38,6 @@ export default Vue.extend({
 
             if (this.$refs.__board.board.state.orientation != n_ori)
                 this.$refs.__board.board.toggleOrientation();
-
-            console.log(this.$refs.__board.board);
         }
     },
 
