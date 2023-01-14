@@ -2,22 +2,31 @@
     <v-app>
         <!-- Navigation Drawer! -->
         <v-navigation-drawer
+            v-if="!($route.name in ['login', 'register'])"
             :permanent="$vuetify.breakpoint.lgAndUp"
             :mini-variant.sync="mini"
-            width="10%"
-            expand-on-hover
+            width="10rem"
+            :expand-on-hover="$vuetify.breakpoint.lgAndUp"
             v-model="drawerShown"
             app
         >
             <!-- Logo?? -->
-            <v-list-item-title
-                v-if="mini"
-                style="font-size: 2em; text-align: center"
-                ><v-icon>mdi-chess-queen</v-icon></v-list-item-title
-            >
-            <v-list-item-title v-else style="font-size: 2em; text-align: center"
-                >Chessible</v-list-item-title
-            >
+            <v-list-item-title style="font-size: 2rem; text-align: center">
+                <router-link
+                    to="/"
+                    @click="drawerShown = false"
+                    style="text-decoration: none; color: inherit"
+                    key="home"
+                >
+                    <v-icon v-if="mini">mdi-chess-queen</v-icon>
+                    <v-list-item-title
+                        v-else
+                        style="font-size: 2rem; text-align: center"
+                    >
+                        Chessible
+                    </v-list-item-title>
+                </router-link>
+            </v-list-item-title>
 
             <v-divider></v-divider>
 
@@ -68,38 +77,36 @@
                 <div class="px-2">
                     <v-btn
                         color="primary"
-                        @click="login()"
+                        @click="$router.push('/login')"
                         v-if="!loggedIn"
                         block
                         class="my-1 together"
-                        >
+                    >
                         <v-icon>mdi-logout-variant</v-icon>
-                        <v-spacer/>
+                        <v-spacer />
                         <div v-if="!mini">Sign Up</div></v-btn
                     >
                     <v-btn
                         color="primary"
-                        @click="login()"
+                        @click="$router.push('/login')"
                         v-if="!loggedIn"
                         block
-                        class="together"
-                        >
-                        
-                        <v-icon>mdi-logout-variant</v-icon>
-                        <v-spacer/>
-                        <div v-if="!mini">Log in</div>
-                        </v-btn
+                        class="my-1 together"
                     >
+                        <v-icon>mdi-logout-variant</v-icon>
+                        <v-spacer />
+                        <div v-if="!mini">Log in</div>
+                    </v-btn>
 
                     <v-btn
                         color="primary"
-                        @click="logout()"
+                        @click="loggedIn = false"
                         v-else
                         block
                         class="together"
                     >
                         <v-icon>mdi-logout-variant</v-icon>
-                        <v-spacer/>
+                        <v-spacer />
                         <div v-if="!mini">Logout</div>
                     </v-btn>
                 </div>
@@ -107,16 +114,17 @@
         </v-navigation-drawer>
 
         <v-app-bar
-            v-if="$vuetify.breakpoint.mdAndDown"
+            v-if="$vuetify.breakpoint.mdAndDown && !($route.name in ['login', 'register'])"
             app
             color="primary"
             dark
             elevate-on-scroll
         >
             <v-app-bar-nav-icon
-                v-if="loggedIn"
                 @click="drawerShown = !drawerShown"
             ></v-app-bar-nav-icon>
+
+            <h1>Chessible</h1>
 
             <!-- Above is right -->
             <v-spacer></v-spacer>
@@ -167,13 +175,16 @@ export default Vue.extend({
         ],
     }),
 
-    methods: {
-        login() {
-            this.loggedIn = true;
-        },
+    mounted() {
+        console.log(this.$route.name);
+        this.onResize();
+        window.addEventListener("resize", this.onResize, { passive: true });
+    },
 
-        logout() {
-            this.loggedIn = false;
+    methods: {
+
+        onResize() {
+            if (this.$vuetify.breakpoint.mdAndDown) this.mini = false;
         },
     },
 });
@@ -192,8 +203,8 @@ export default Vue.extend({
     background-color: transparent !important;
 }
 
-.together{
-    padding: 0px 1px
+.together {
+    padding: 0px 1px;
 }
 </style>
 

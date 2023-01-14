@@ -1,10 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import HomeView from './views/HomeView.vue'
-import FriendView from './views/FriendView.vue'
-import LoginView from './views/LoginView.vue'
-import RegisterView from './views/RegisterView.vue'
-import RankingView from './views/RankingView.vue'
 
 Vue.use(VueRouter)
 
@@ -20,10 +16,40 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "about" */ './views/AboutView.vue')
   },
   {
+    path: '/puzzles',
+    name: 'puzzl',
+    component: () => import(/* webpackChunkName: "about" */ './views/PuzzleView.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import(/* webpackChunkName: "about" */ './views/RegisterView.vue')
+  },
+  {
+    path: '/friends',
+    name: 'friends',
+    component: () => import(/* webpackChunkName: "about" */ './views/FriendsView.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import(/* webpackChunkName: "about" */ './views/LoginView.vue')
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import(/* webpackChunkName: "about" */ './views/ProfileView.vue')
+  },
+  {
+    path: '/ranking',
+    name: 'ranking',
+    component: () => import(/* webpackChunkName: "about" */ './views/RankingView.vue')
+  },
+  {
     path: '/play',
     name: 'game',
     component: () => import(/* webpackChunkName: "about" */ './views/GameView.vue')
-  }
+  },
 ]
 
 const router = new VueRouter({
