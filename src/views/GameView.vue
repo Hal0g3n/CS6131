@@ -1,7 +1,9 @@
 <template>
-    <div class="Game">
-        <Chessboard align="center" @onEnd="onEnd" ref="board"/>
-        
+    <v-container class="Game" fill-height fill-width>
+        <v-row>
+            <Chessboard align="center" @onEnd="onEnd" ref="board"/>
+        </v-row>
+
         <v-dialog v-model="dialog" width="500">
             <!-- <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -44,7 +46,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-    </div>
+    </v-container>
 </template>
 
 
@@ -78,6 +80,7 @@ export default Vue.extend({
 
     methods: {
         onEnd(win) {
+            console.log(this.dialog);
             this.dialog = true;
             this.won = (this.ori == win);
         },

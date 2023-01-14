@@ -8,6 +8,7 @@
 
 <script lang="ts">
 // import { chessboard } from "vue-chessboard";
+// TODO: The entire thing bruh
 import chessboard from "./TempAIBoard.vue"
 import "../assets/stylesheets/board.css";
 

@@ -42,5 +42,9 @@ export default Vue.extend({
             console.log(this.$refs.__board.board);
         }
     },
+
+    mounted() {
+        // TODO: Make Chessboard more responsive
+    }
 });
 </script>
