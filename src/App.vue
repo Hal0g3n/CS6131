@@ -92,7 +92,7 @@
                 <div class="px-2">
                     <v-btn
                         color="primary"
-                        @click="$router.push('/register')"
+                        @click="$router.push('/CS6131/register')"
                         v-if="!loggedIn"
                         block
                         class="my-1 together"
@@ -103,7 +103,7 @@
                     >
                     <v-btn
                         color="primary"
-                        @click="$router.push('/login')"
+                        @click="$router.push('/CS6131/login')"
                         v-if="!loggedIn"
                         block
                         class="my-1 together"

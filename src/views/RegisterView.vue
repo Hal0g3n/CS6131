@@ -68,7 +68,7 @@
                     
                     <br>
                     <h3 align=center>
-                        Got an account? <router-link to="/login">Log in now!</router-link>
+                        Got an account? <router-link to="/CS6131/login">Log in now!</router-link>
                     </h3>
                 </v-card>
             </v-col>

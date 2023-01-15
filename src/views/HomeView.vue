@@ -120,7 +120,7 @@
                         class="blue lighten-2 mt-3 mb-10"
                         dark
                         large
-                        href="/register"
+                        href="/CS6131/register"
                     >
                         SIGN UP NOW!
                     </v-btn>

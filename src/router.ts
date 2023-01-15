@@ -21,9 +21,9 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "about" */ './views/PuzzleView.vue')
   },
   {
-    path: '/register',
+    path: '/CS6131/register',
     name: 'register',
-    component: () => import(/* webpackChunkName: "about" */ './views/RegisterView.vue')
+    component: () => import(/* webpackChunkName: "about" */ './views/CS6131/registerView.vue')
   },
   {
     path: '/friends',
@@ -31,9 +31,9 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "about" */ './views/FriendsView.vue')
   },
   {
-    path: '/login',
+    path: '/CS6131/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "about" */ './views/LoginView.vue')
+    component: () => import(/* webpackChunkName: "about" */ './views/CS6131/loginView.vue')
   },
   {
     path: '/profile',
