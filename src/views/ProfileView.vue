@@ -329,7 +329,7 @@ export default Vue.extend({
     }),
     methods: {
         rezoomClassicalData(timeline) {
-            this.selection = timeline;
+            this.classicalSelection = timeline;
             var right = this.classical_data[0]['data'][this.classical_data[0]['data'].length - 1][0];
             var left = new Date(right);
 
@@ -348,7 +348,7 @@ export default Vue.extend({
         },
         
         rezoomPuzzleData(timeline) {
-            this.selection = timeline;
+            this.puzzleSelection = timeline;
             var right = this.puzzle_data[0]['data'][this.puzzle_data[0]['data'].length - 1][0];
             var left = new Date(right);
 
