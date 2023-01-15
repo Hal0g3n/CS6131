@@ -12,3 +12,8 @@ declare module 'vuetify/lib/framework' {
   import Vuetify from 'vuetify'
   export default Vuetify
 }
+
+declare module 'vue-apexcharts' {
+  import VueApexCharts from 'vue-apexcharts'
+  export default VueApexCharts
+}

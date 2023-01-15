@@ -14,11 +14,18 @@ export default new Vuetify({
                 // anchor: colors.blueGrey.base
             },
             dark: {
-                primary: colors.blue.base, // #E53935
+                primary: {
+                    base: colors.blue.base, // #E53935
+                    lighten1: colors.blue.darken1,
+                    lighten2: colors.blue.darken2,
+                    lighten3: colors.blue.darken3,
+                    lighten4: colors.blue.darken4
+                },
                 secondary: colors.orange.base, // #FFCDD2
                 accent: colors.indigo.base, // #3F51B5
                 // anchor: colors.blueGrey.base
             },
         },
+        options: { customProperties: true }
     },
 });

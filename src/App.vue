@@ -161,9 +161,10 @@ export default Vue.extend({
         hideSubtitle: false,
         routes: [
             { name: "Play", icon: "mdi-chess-king", path: "/play" },
-            { name: "Puzzles", icon: "mdi-checkerboard", path: "/puzzles" },
+            // TODO: Fix up puzzles in the future
+            // { name: "Puzzles", icon: "mdi-puzzle", path: "/puzzles" },
             { name: "Profile", icon: "mdi-account-circle", path: "/profile" },
-            { name: "Friends", icon: "mdi-account-multiple", path: "/friends" },
+            // { name: "Friends", icon: "mdi-account-multiple", path: "/friends" },
             {
                 name: "Rankings",
                 icon: "mdi-chart-box-outline",
@@ -209,7 +210,7 @@ export default Vue.extend({
 <style scoped>
 /* Navigation Drawer */
 .list:hover {
-    background: var(--v-primary-base);
+    background: var(--v-primary-lighten4);
 }
 .list:active {
     background: var(--v-secondary-base);

@@ -2,49 +2,71 @@
     <v-container class="Game" fluid fill-height fill-width>
         <v-row justify="center">
             <v-col md="5" v-if="$vuetify.breakpoint.mdAndUp">
-                <v-card elevation="12" shaped class="mt-6 pb-4" color="primary lighten-2" height="15vh">
-                    <div class="d-flex flex-no-wrap justify-space-between">
+                <v-card
+                    elevation="12"
+                    class="pb-4"
+                    color="primary lighten-2"
+                    height="25vh"
+                    width="100%"
+                    style="margin-top:3vh"
+                    shaped
+                >
+                    <div
+                        class="d-flex flex-no-wrap justify-space-between align-center"
+                        style="height: 100%; width: 100%"
+                    >
                         <div>
-                            <v-card-title style="text-align: left"
-                                class="text-h2 font-weight-medium"
+                            <v-card-title
+                                style="text-align: left"
+                                class="text-h3 font-weight-medium mb-auto"
                                 v-text="opponent.username"
                             ></v-card-title>
-
-                            <v-card-text style="text-align: left"
-                                class="text-h4 font-weight-bold"
+                            <v-card-title
+                                style="text-align: left"
+                                class="text-h5 font-weight-bold mt-auto"
                                 v-text="opponent.rating"
-                            ></v-card-text>
+                            ></v-card-title>
                         </div>
 
-                        <v-avatar class="ma-3" size="125" tile>
-                            <v-img :src="opponent.avatar"></v-img>
+                        <v-avatar class="ma-3" size="15vh" tile>
+                            <v-img :src="opponent.avatar" style="border: 2px solid var(--v-secondary-lighten1);"></v-img>
                         </v-avatar>
                     </div>
                 </v-card>
 
                 <!-- Spacer div -->
-                <div style="height: calc(90vmin - 400px)"/>
+                <div style="height: 25vmin"/>
 
-                <v-card elevation="12" shaped class="pb-4" color="primary lighten-2" height="15vh">
-                    <div class="d-flex flex-no-wrap justify-space-between">
+                <v-card
+                    elevation="12"
+                    class="pb-4"
+                    shaped
+                    color="primary lighten-2"
+                    height="25vh"
+                    width="100%"
+                >
+                    <div
+                        class="d-flex flex-no-wrap justify-space-between align-center"
+                        style="height: 100%; width: 100%"
+                    >
                         <div>
-                            <v-card-title style="text-align: left"
-                                class="text-h2 font-weight-medium"
+                            <v-card-title
+                                style="text-align: left"
+                                class="text-h3 font-weight-medium mb-auto"
                                 v-text="player.username"
                             ></v-card-title>
-
-                            <v-card-text style="text-align: left"
-                                class="text-h4 font-weight-bold"
+                            <v-card-title
+                                style="text-align: left"
+                                class="text-h5 font-weight-bold mt-auto"
                                 v-text="player.rating"
-                            ></v-card-text>
+                            ></v-card-title>
                         </div>
 
-                        <v-avatar class="ma-3" size="125" tile>
-                            <v-img :src="player.avatar"></v-img>
+                        <v-avatar class="ma-3" size="15vh" tile>
+                            <v-img :src="player.avatar" style="border: 2px solid var(--v-secondary-lighten1);"></v-img>
                         </v-avatar>
                     </div>
                 </v-card>
-
             </v-col>
 
             <v-col lg="6" md="7" cols="12" align="center">
