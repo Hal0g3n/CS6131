@@ -51,7 +51,7 @@
                     </v-card-actions>
                     <br>
                     <h3 align=center>
-                        New here? <router-link to="/CS6131/register">Sign up now!</router-link>
+                        New here? <router-link to="/register">Sign up now!</router-link>
                     </h3>
                 </v-card>
             </v-col>

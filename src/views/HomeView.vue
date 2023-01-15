@@ -116,14 +116,15 @@
                         What are you waiting for, join Chessible <u>NOW</u>!
                     </div>
                     
-                    <v-btn
-                        class="blue lighten-2 mt-3 mb-10"
-                        dark
-                        large
-                        href="/CS6131/register"
-                    >
-                        SIGN UP NOW!
-                    </v-btn>
+                    <router-link to="/register">
+                        <v-btn
+                            class="blue lighten-2 mt-3 mb-10"
+                            dark
+                            large
+                        >
+                            SIGN UP NOW!
+                        </v-btn>
+                    </router-link>
 
                 </v-layout>
             </v-parallax>

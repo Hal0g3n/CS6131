@@ -83,7 +83,7 @@
                         </v-list-item-icon>
 
                         <v-list-item-content color="primary">
-                            <v-list-item-title dark class='text-button'> logout </v-list-item-title>
+                            <v-list-item-title class='text-button'> logout </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -92,7 +92,7 @@
                 <div class="px-2">
                     <v-btn
                         color="primary"
-                        @click="$router.push('/CS6131/register')"
+                        @click="$router.push('/register')"
                         v-if="!loggedIn"
                         block
                         class="my-1 together"
@@ -103,7 +103,7 @@
                     >
                     <v-btn
                         color="primary"
-                        @click="$router.push('/CS6131/login')"
+                        @click="$router.push('/login')"
                         v-if="!loggedIn"
                         block
                         class="my-1 together"
@@ -220,7 +220,7 @@ export default Vue.extend({
 
 /* Navigation Drawer Bottom */
 .list_bot{
-    background: var(--v-primary-lighten1);
+    background: var(--v-primary-base);
 }
 .list_bot:hover {
     background: var(--v-primary-lighten4);
