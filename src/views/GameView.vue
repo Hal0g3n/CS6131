@@ -2,7 +2,7 @@
     <v-container class="Game" fluid fill-height fill-width>
         <v-row justify="center">
             <v-col md="5" v-if="$vuetify.breakpoint.mdAndUp">
-                <v-card elevation="12" shaped class="mt-6 pb-4" color="primary lighten-2">
+                <v-card elevation="12" shaped class="mt-6 pb-4" color="primary lighten-2" height="15vh">
                     <div class="d-flex flex-no-wrap justify-space-between">
                         <div>
                             <v-card-title style="text-align: left"
@@ -23,9 +23,9 @@
                 </v-card>
 
                 <!-- Spacer div -->
-                <div style="height: calc(85vmin - 400px)"/>
+                <div style="height: calc(90vmin - 400px)"/>
 
-                <v-card elevation="12" shaped class="pb-4" color="primary lighten-2">
+                <v-card elevation="12" shaped class="pb-4" color="primary lighten-2" height="15vh">
                     <div class="d-flex flex-no-wrap justify-space-between">
                         <div>
                             <v-card-title style="text-align: left"
@@ -52,6 +52,7 @@
             </v-col>
         </v-row>
 
+        <!-- TODO: Make dialog look better -->
         <v-dialog v-model="dialog" width="500">
             <v-card>
                 <v-card-title class="text-h5 grey lighten-2">

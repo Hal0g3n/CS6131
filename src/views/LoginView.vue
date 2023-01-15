@@ -14,6 +14,7 @@
                     <v-card-text class='pa-4'>
                         <v-form>
                             <v-text-field
+                                id="username"
                                 v-model="username"
                                 outlined
                                 clearable
