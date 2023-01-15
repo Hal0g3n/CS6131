@@ -116,7 +116,7 @@
                         </div>
 
                         <LineChart
-                            ref="chart"
+                            ref="classicalChart"
                             width="50%"
                             height="80%"
                             type="area"
@@ -160,7 +160,7 @@
                         </div>
 
                         <LineChart
-                            ref="chart"
+                            ref="puzzleChart"
                             width="50%"
                             height="80%"
                             type="area"
@@ -341,7 +341,7 @@ export default Vue.extend({
                 default:
             }
             
-            this.$refs.chart.zoomX(
+            this.$refs.classicalChart.zoomX(
                 left.getTime(),
                 new Date().getTime() // Today
             );
@@ -360,7 +360,7 @@ export default Vue.extend({
                 default:
             }
             
-            this.$refs.chart.zoomX(
+            this.$refs.puzzleChart.zoomX(
                 left.getTime(),
                 new Date().getTime() // Today
             );

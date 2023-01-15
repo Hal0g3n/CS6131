@@ -2,11 +2,11 @@
     <v-app>
         <!-- Navigation Drawer! -->
         <v-navigation-drawer
-            v-if="!($route.name in ['login', 'register'])"
+            v-if="loggedIn"
             :permanent="$vuetify.breakpoint.lgAndUp"
-            :mini-variant.sync="mini"
-            width="10rem"
             :expand-on-hover="$vuetify.breakpoint.lgAndUp"
+            :mini-variant.sync="mini"
+            width="13rem"
             v-model="drawerShown"
             app
         >
@@ -45,7 +45,7 @@
                         </v-list-item-icon>
 
                         <v-list-item-content>
-                            <v-list-item-title>
+                            <v-list-item-title class='text-button'>
                                 {{ item.name }}
                             </v-list-item-title>
                         </v-list-item-content>
@@ -60,6 +60,7 @@
 
                 <v-list dense nav>
                     <v-list-item
+                        class="list"
                         @click="$vuetify.theme.dark = !$vuetify.theme.dark"
                         color="primary"
                     >
@@ -68,7 +69,21 @@
                         </v-list-item-icon>
 
                         <v-list-item-content color="primary">
-                            <v-list-item-title> Theme </v-list-item-title>
+                            <v-list-item-title class='text-button'> Theme </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    
+                    <v-list-item
+                        class="list_bot"
+                        @click="loggedIn = false; $router.push('/')"
+                        color="primary"
+                    >
+                        <v-list-item-icon>
+                            <v-icon>mdi-logout-variant</v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content color="primary">
+                            <v-list-item-title dark class='text-button'> logout </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -77,7 +92,7 @@
                 <div class="px-2">
                     <v-btn
                         color="primary"
-                        @click="$router.push('/login')"
+                        @click="$router.push('/register')"
                         v-if="!loggedIn"
                         block
                         class="my-1 together"
@@ -97,24 +112,13 @@
                         <v-spacer />
                         <div v-if="!mini">Log in</div>
                     </v-btn>
-
-                    <v-btn
-                        color="primary"
-                        @click="loggedIn = false"
-                        v-else
-                        block
-                        class="together"
-                    >
-                        <v-icon>mdi-logout-variant</v-icon>
-                        <v-spacer />
-                        <div v-if="!mini">Logout</div>
-                    </v-btn>
                 </div>
+
             </template>
         </v-navigation-drawer>
 
         <v-app-bar
-            v-if="$vuetify.breakpoint.mdAndDown && !($route.name in ['login', 'register'])"
+            v-if="loggedIn && $vuetify.breakpoint.mdAndDown && !($route.name in ['login', 'register'])"
             app
             color="primary"
             dark
@@ -126,11 +130,9 @@
 
             <h1>Chessible</h1>
 
-            <!-- Above is right -->
+            <!-- Above is Left -->
             <v-spacer></v-spacer>
 
-            <!-- Dark Mode Toggle -->
-            <!-- TODO: Make it look better -->
             <v-btn
                 @click="$vuetify.theme.dark = !$vuetify.theme.dark"
                 label="Toggle Dark Mode"
@@ -144,7 +146,7 @@
 
         <!-- Router View -->
         <v-main>
-            <router-view></router-view>
+            <router-view @login="loggedIn = true"></router-view>
         </v-main>
     </v-app>
 </template>
@@ -157,7 +159,7 @@ export default Vue.extend({
     data: () => ({
         loggedIn: false,
         drawerShown: false,
-        mini: true,
+        mini: false,
         hideSubtitle: false,
         routes: [
             { name: "Play", icon: "mdi-chess-king", path: "/play" },
@@ -181,7 +183,6 @@ export default Vue.extend({
     },
 
     methods: {
-
         onResize() {
             if (this.$vuetify.breakpoint.mdAndDown) this.mini = false;
         },
@@ -213,6 +214,18 @@ export default Vue.extend({
     background: var(--v-primary-lighten4);
 }
 .list:active {
+    background: var(--v-secondary-base);
+}
+
+
+/* Navigation Drawer Bottom */
+.list_bot{
+    background: var(--v-primary-lighten1);
+}
+.list_bot:hover {
+    background: var(--v-primary-lighten4);
+}
+.list_bot:active {
     background: var(--v-secondary-base);
 }
 </style>  

@@ -68,7 +68,7 @@
                     
                     <br>
                     <h3 align=center>
-                        Got an account? <router-link to="/register">Log in now!</router-link>
+                        Got an account? <router-link to="/login">Log in now!</router-link>
                     </h3>
                 </v-card>
             </v-col>
@@ -90,7 +90,8 @@ export default {
     },
     methods: {
         register() {
-            
+            this.$router.push("/profile")
+            this.$emit("login");
         },
     },
 };

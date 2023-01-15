@@ -70,14 +70,26 @@
                         />
                     </div>
 
+                    <v-card-title>
+                        <v-spacer></v-spacer>
+                        <v-text-field
+                            v-model="search"
+                            append-icon="mdi-magnify"
+                            label="Search"
+                            single-line
+                            hide-details
+                            style="margin-right: 5%; max-width: 45%"
+                        ></v-text-field>
+                    </v-card-title>
+
                     <v-data-table
-                        style="margin-right: 5%; max-width: 45%"
                         no-data-text="Go make some friends!"
                         height="90vh"
                         :headers="headers"
                         :items="puzzle_friend_toggle? friend_puzzle : top_puzzle"
                         class="elevation-5 mx-10 mb-5"
                         :items-per-page="20"
+                        :search="puzzle_search"
                         :loading="top_puzzle.length < 20"
                     >
                     </v-data-table>
