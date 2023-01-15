@@ -55,7 +55,7 @@
 
                     <v-card-actions class="mx-5">
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" @click="register" class="px-5"
+                        <v-btn color="primary" @click="feedback" class="px-5"
                             >Submit</v-btn
                         >
                     </v-card-actions>
@@ -76,7 +76,7 @@ export default {
         };
     },
     methods: {
-        register() {},
+        feedback() {},
     },
 };
 </script>

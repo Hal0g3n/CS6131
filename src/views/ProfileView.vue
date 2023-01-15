@@ -34,13 +34,14 @@
         <!-- Graphing -->
         <v-card class="ma-10" elevation="5">
             <v-toolbar flat color="primary" dark>
-                <v-toolbar-title class="text-h3">Statistics</v-toolbar-title>
+                <v-toolbar-title class="text-h3 ma-5">Statistics</v-toolbar-title>
             </v-toolbar>
             <v-tabs
                 vertical
                 grow
                 color="secondary darken-1"
                 background-color="transparent"
+                icon
             >
                 <v-tab>
                     <v-icon left> mdi-information </v-icon>
@@ -67,6 +68,7 @@
                                 :items="games"
                                 class="elevation-1"
                                 items-per-page="6"
+                                no-data-text="No games played so far..."
                             >
                                 <template v-slot:item.result="{ item }">
                                     <v-icon v-if="item.result === 1" color="green">mdi-plus</v-icon>
@@ -262,7 +264,7 @@ export default Vue.extend({
             },
             {
                 opponent: "AI",
-                result: 0,
+                result: -1,
                 moves: 69,
                 side: "white",
                 date: new Date(2023, 1, 11)
@@ -290,7 +292,7 @@ export default Vue.extend({
             },
             {
                 opponent: "AI",
-                result: 0,
+                result: -1,
                 moves: 50,
                 side: "black",
                 date: new Date(2023, 1, 10)
