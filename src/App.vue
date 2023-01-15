@@ -18,12 +18,12 @@
                     style="text-decoration: none; color: inherit"
                     key="home"
                 >
-                    <v-icon v-if="mini">mdi-chess-queen</v-icon>
+                    <v-icon v-if="mini"><v-img aspect-ratio="1" height="100%" src="./assets/logo.png"/></v-icon>
                     <v-list-item-title
                         v-else
                         style="font-size: 2rem; text-align: center"
                     >
-                        Chessible
+                        <v-img src="./assets/logoLong.png"/>
                     </v-list-item-title>
                 </router-link>
             </v-list-item-title>

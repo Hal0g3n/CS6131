@@ -175,7 +175,7 @@ export default Vue.extend({
     name: "GameView",
     components: { Chessboard },
     data: () => ({
-        dialog: true,
+        dialog: false,
         won: -1,
         ori: "",
         opponent: {
