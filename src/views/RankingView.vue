@@ -29,7 +29,7 @@
                     <v-card-title>
                         <v-spacer></v-spacer>
                         <v-text-field
-                            v-model="search"
+                            v-model="chess_search"
                             append-icon="mdi-magnify"
                             label="Search"
                             single-line
@@ -73,7 +73,7 @@
                     <v-card-title>
                         <v-spacer></v-spacer>
                         <v-text-field
-                            v-model="search"
+                            v-model="puzzle_search"
                             append-icon="mdi-magnify"
                             label="Search"
                             single-line

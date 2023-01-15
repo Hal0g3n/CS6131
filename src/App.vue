@@ -157,9 +157,9 @@ export default Vue.extend({
     name: "App",
 
     data: () => ({
-        loggedIn: false,
+        loggedIn: true,
         drawerShown: false,
-        mini: false,
+        mini: true,
         hideSubtitle: false,
         routes: [
             { name: "Play", icon: "mdi-chess-king", path: "/play" },

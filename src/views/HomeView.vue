@@ -116,13 +116,14 @@
                         What are you waiting for, join Chessible <u>NOW</u>!
                     </div>
                     
-                    <router-link to="/register">
+                    <router-link to="/register" style="text-decoration: none">
                         <v-btn
-                            class="blue lighten-2 mt-3 mb-10"
+                            class="mt-3 mb-10 text-h6"
+                            elevation=12
                             dark
                             large
                         >
-                            SIGN UP NOW!
+                            SIGN UP!
                         </v-btn>
                     </router-link>
 
