@@ -42,6 +42,14 @@ export default Vue.extend({
     },
 
     mounted() {
+        this.$refs.__board.board.set({
+            fen: this.$refs.__board.game.fen(),
+            turnColor: "white",
+            movable: { 
+                color: "white", 
+                dests: [], 
+            },
+        });
         // TODO: Make Chessboard more responsive
     }
 });

@@ -69,6 +69,10 @@
                                 class="elevation-1"
                                 items-per-page="6"
                                 no-data-text="No games played so far..."
+                                :footer-props="{
+                                    showFirstLastPage: true,
+                                    disableItemsPerPage: true
+                                }"
                             >
                                 <template v-slot:item.result="{ item }">
                                     <v-icon v-if="item.result === 1" color="green">mdi-plus</v-icon>

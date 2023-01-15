@@ -205,10 +205,6 @@ export default Vue.extend({
             this.$refs.board.reloadBoard(ori);
         },
     },
-
-    mounted() {
-        this.$refs.board.reloadBoard("white");
-    },
 });
 </script>
 
