@@ -239,7 +239,7 @@ export default Vue.extend({
             username: "Halogen",
             rating: 100,
             avatar: "https://cdn.discordapp.com/avatars/340785972545454080/6cf1fe5e726470b1903236d2638d5a58.png?size=1024",
-            about: "Hello I am Halogen! Let's all have fun together!"
+            about: "Hello I am new to chess! Let's all have fun together!"
         },
 
         headers: [
@@ -382,6 +382,8 @@ export default Vue.extend({
         for (var i in data[13]['points']) {
             this.puzzle_data.push([new Date(data[13]['points'][i][0], data[13]['points'][i][1], data[13]['points'][i][2]), data[13]['points'][i][3]]);
         }
+
+        this.player.username = this.$route.params.username;
 
         this.classical_data = [{
             data: this.classical_data,

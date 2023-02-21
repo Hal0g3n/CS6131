@@ -36,7 +36,7 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "about" */ './views/LoginView.vue')
   },
   {
-    path: '/profile',
+    path: '/profile/:username',
     name: 'profile',
     component: () => import(/* webpackChunkName: "about" */ './views/ProfileView.vue')
   },
