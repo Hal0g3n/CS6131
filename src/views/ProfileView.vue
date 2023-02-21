@@ -372,7 +372,7 @@ export default Vue.extend({
     },
     components: { LineChart: VueApexCharts },
 
-    created: async function() {
+    beforeMount: async function() {
         var data = await fetch("https://lichess.org/api/user/penguingim1/rating-history").then((response) => response.json())
 
         for (var i in data[0]['points']) {
@@ -383,7 +383,7 @@ export default Vue.extend({
             this.puzzle_data.push([new Date(data[13]['points'][i][0], data[13]['points'][i][1], data[13]['points'][i][2]), data[13]['points'][i][3]]);
         }
 
-        this.player.username = this.$route.params.username;
+        this.player.username = this.$route.params.username || this.$store.state.curPlayer.username;
 
         this.classical_data = [{
             data: this.classical_data,

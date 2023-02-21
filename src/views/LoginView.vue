@@ -69,9 +69,18 @@ export default {
         showPw: false
     }),
     methods: {
-        login() {
-            this.$router.push("/profile");
-            this.$emit("login");
+        async login() {
+            if (this.username == "" || this.password == "") 
+                alert("Please enter a username and password");
+            
+            if (await this.$store.dispatch("loginPlayer", {
+                username: this.username,
+                password: this.password,
+            })) {
+                this.$router.push("/profile")
+                this.$emit("login");
+            }
+            else { alert("Wrong Password/Username"); }
         }
     }
 };

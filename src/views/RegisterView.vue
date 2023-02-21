@@ -89,9 +89,25 @@ export default {
         };
     },
     methods: {
-        register() {
-            this.$router.push("/profile")
-            this.$emit("login");
+        async register() {
+            if (this.username == "" || this.password == "" || this.confirmPassword == "") {
+                alert("Please fill in all fields");
+                return;
+            }
+
+            if (this.password!= this.confirmPassword) {
+                alert("Password do not match");
+                return;
+            }
+
+            if (await this.$store.dispatch("loginPlayer", {
+                username: this.username,
+                password: this.password,
+            })) {
+                this.$router.push("/profile")
+                this.$emit("login");
+            }
+            else {alert("Wrong Password/Username");}
         },
     },
 };
