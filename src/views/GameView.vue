@@ -158,8 +158,7 @@ import { getDatabase } from "firebase/database";
 
 // See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
-    databaseURL:
-        "https://chessible-34200-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    databaseURL: "https://chessible-34200-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
 // Initialize Firebase
@@ -190,6 +189,13 @@ export default Vue.extend({
         },
     }),
 
+    mounted() {
+        window.addEventListener('resize', this.onResize);
+    },
+    unmounted() {
+        window.removeEventListener('resize', this.onResize);
+    },
+
     methods: {
         onEnd(win) {
             if (win == this.ori) this.won = 1;
@@ -204,7 +210,12 @@ export default Vue.extend({
             this.ori = ori;
             this.$refs.board.reloadBoard(ori);
         },
+
+        onResize() {
+            document.body.dispatchEvent(new Event('chessground.resize'))
+        }
     },
+
 });
 </script>
 

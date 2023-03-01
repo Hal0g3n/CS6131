@@ -1,7 +1,5 @@
 <template>
-    <div class="chessboard">
-        <chessboard @onMove="onMove" fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" ref="__board"/>
-    </div>
+    <chessboard @onMove="onMove" fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" ref="__board"/>
 </template>
 
 <script>
