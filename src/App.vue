@@ -137,6 +137,9 @@
         <v-main>
             <router-view @login="loggedIn = true"></router-view>
         </v-main>
+
+        <!-- Notification -->
+        <FlashMessage :position="'right bottom'"/>
     </v-app>
 </template>
 

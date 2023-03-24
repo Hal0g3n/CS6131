@@ -65,7 +65,6 @@
                         >
                     </v-card-actions>
 
-                    
                     <br>
                     <h3 align=center>
                         Got an account? <router-link to="/login">Log in now!</router-link>
@@ -77,6 +76,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     name: "App",
     data() {
@@ -91,23 +92,27 @@ export default {
     methods: {
         async register() {
             if (this.username == "" || this.password == "" || this.confirmPassword == "") {
-                alert("Please fill in all fields");
+                alert("Missing Values: Please fill in all fields");
                 return;
             }
 
-            if (this.password!= this.confirmPassword) {
-                alert("Password do not match");
+            if (this.password != this.confirmPassword) {
+                alert("Mismatch Password: Check your passwords");
                 return;
             }
-
-            if (await this.$store.dispatch("loginPlayer", {
-                username: this.username,
-                password: this.password,
-            })) {
-                this.$router.push("/profile")
-                this.$emit("login");
+            
+            
+            const formData = new FormData()
+            formData.append('username', this.username)
+            formData.append('password', this.password)
+            
+            let res = await axios.post('http://chessible.pythonanywhere.com/register', formData, {})
+            console.log(res.status)
+            if (res.status == 200) {
+                alert("Registration Complete: Try logging in now :)");
+                this.$router.push("/login")
             }
-            else {alert("Wrong Password/Username");}
+            else {alert("Username Taken: Try another username"); return;}
         },
     },
 };

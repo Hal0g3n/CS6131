@@ -4,6 +4,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import VueFlashMessage from '@smartweb/vue-flash-message';
 
 Vue.config.productionTip = false
 
