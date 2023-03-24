@@ -208,7 +208,7 @@ export default Vue.extend({
 
         startGame(ori) {
             this.ori = ori;
-            this.$refs.board.reloadBoard(ori);
+            this.$refs.board.restartBoard(ori);
         },
 
         onResize() {

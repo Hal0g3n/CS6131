@@ -26,9 +26,9 @@ const routes: Array<RouteConfig> = [
         component: () => import(/* webpackChunkName: "about" */ './views/RegisterView.vue')
     },
     {
-        path: '/friends',
-        name: 'friends',
-        component: () => import(/* webpackChunkName: "about" */ './views/FriendsView.vue')
+        path: '/teams',
+        name: 'teams',
+        component: () => import(/* webpackChunkName: "about" */ './views/TeamView.vue')
     },
     {
         path: '/login',
