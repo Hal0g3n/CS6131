@@ -6,11 +6,12 @@ jobs:
     name: Build Vue
     steps:
     - uses: actions/checkout@v2
+    
+    - run: cd Frontend
 
     - id: Build-Vue
-        working-directory: ./Frontend
-        uses: xRealNeon/VuePagesAction@1.0.1
-        with:
-            username: 'Haloen'
-            reponame: 'CS6131'
-            token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+      uses: xRealNeon/VuePagesAction@1.0.1
+      with:
+          username: 'Haloen'
+          reponame: 'CS6131'
+          token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
