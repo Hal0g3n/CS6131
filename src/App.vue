@@ -145,11 +145,11 @@
 
 <script lang="ts">
 import Vue from "vue";
+import Vuex, {Store } from 'vuex';
 export default Vue.extend({
     name: "App",
 
     data: () => ({
-        loggedIn: false,
         drawerShown: false,
         mini: true,
         routes: [
@@ -175,6 +175,10 @@ export default Vue.extend({
             if (this.$vuetify.breakpoint.mdAndDown) this.mini = false;
         },
     },
+
+    computed() {
+        return this.$store.state.curPlayer.username != "";
+    }
 });
 </script>
 
