@@ -55,6 +55,7 @@
                     </h3>
                 </v-card>
             </v-col>
+            <v-btn @click="$notify('Login failed')"></v-btn>
         </v-row>
     </v-container>
 </template>
@@ -70,17 +71,25 @@ export default {
     }),
     methods: {
         async login() {
-            if (this.username == "" || this.password == "") 
-                alert("Please enter a username and password");
+            if (this.username == "" || this.password == "") {
+                this.$notify("Please enter a username and password");
+                return;
+            }
             
+            // If login Player was successful
             if (await this.$store.dispatch("loginPlayer", {
                 username: this.username,
                 password: this.password,
-            })) {
-                this.$router.push("/profile")
-                this.$emit("login");
+            })) this.$router.push("/profile"); // Go to profile
+
+            else { 
+                // State the error
+                this.$notify({
+                    type: "error",
+                    title: 'Authorization',
+                    text: 'You have been logged in!'
+                }); 
             }
-            else { alert("Wrong Password/Username"); }
         }
     }
 };

@@ -25,16 +25,16 @@ app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"
 app.config["JWT_COOKIE_SECURE"] = False
 
 # Change this in your code!
-app.config["JWT_SECRET_KEY"] = "super-secret"
+app.config["JWT_SECRET_KEY"] = "Cheese Cake"
 
 jwt = JWTManager(app)
 
 
 # Enter your database connection details below
-app.config['MYSQL_HOST'] = 'db4free.net'
-app.config['MYSQL_USER'] = 'halogen'
-app.config['MYSQL_PASSWORD'] = 'Pearson1'
-app.config['MYSQL_DB'] = 'chessible'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'admin'
+app.config['MYSQL_DB'] = 'Chessible'
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -48,10 +48,10 @@ def login():
     # Create variables for easy access
     username = request.form['username']
     password = request.form['password']
-    
+
     # Check if account exists using MySQL
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM Player WHERE username = %s', (username,))
+    cursor.execute('SELECT * FROM Players WHERE username = %s', (username,))
     account = cursor.fetchone()
 
     if account and check_password_hash(account['password'], password):
@@ -60,20 +60,36 @@ def login():
     else:
         return jsonify(message = "Incorrect Username/Password")
 
+@app.route('/teams', methods=['GET'])
+@jwt_required(optional=True)
+def searchTeam():
+    # Get all teams with search params using MySQL
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    if 'name' in request.args: cursor.execute('SELECT * FROM Teams WHERE team_name LIKE %s', ("%{}%".format(request.args['name']),))
+    else: cursor.execute("SELECT * FROM Teams")
 
-@app.route("/jwt-login", methods=["POST"])
-def jwt_login():
-    response = jsonify({"msg": "login successful"})
-    access_token = create_access_token(identity="example_user")
-    set_access_cookies(response, access_token)
-    return response
+    # Return all teams
+    return jsonify(cursor.fetchall())
+    
 
+@app.route('/teams/<team_id>', methods=['GET'])
+@jwt_required(optional=True)
+def team(id):
+
+    return None
+
+@app.route('/game/<id>', methods=['GET'])
+def game(id):
+    return None
+
+@app.route('/game', methods=['GET'])
+def searchGame():
+    return None
 
 @app.route('/logout', methods=['POST'])
 @jwt_required
 def logout():
     return 'Logout ' + current_identity, 200
-
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -93,9 +109,9 @@ def register():
 
     # Username check
     if not re.match(r'[A-Za-z0-9]+', username): return "No SQLI", 403
-    
+
     # Account does not exists and the form data is valid, now insert new account into accounts table
-    cursor.execute('INSERT INTO Player(username, password) VALUES (%s, %s)', (username, generate_password_hash(password),))
+    cursor.execute('INSERT INTO Players(username, password) VALUES (%s, %s)', (username, generate_password_hash(password),))
     mysql.connection.commit() #commit the insertion
 
     return "Success", 200

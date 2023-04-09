@@ -18,7 +18,7 @@ declare module 'vue-apexcharts' {
   export default VueApexCharts
 }
 
-declare module '@smartweb/vue-flash-message' {
-    import VueFlashMessage from '@smartweb/vue-flash-message';
-    export default VueFlashMessage
+declare module '@vue-notification' {
+    import Notifications from 'vue-notification'
+    export default Notifications
 }
