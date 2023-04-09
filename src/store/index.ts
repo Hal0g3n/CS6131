@@ -17,7 +17,17 @@ export default new Vuex.Store({
             state.curPlayer.access_token = token
         }
     },
-    getters: {},
+    getters: {
+        loggedIn(state) {return state.curPlayer.access_token != "";},
+        
+        getTeam: (state) => async (query = "") => {
+            let response = await axios.get(
+                `http://chessible.pythonanywhere.com/teams${query ? `?q=${query}` : ''}`,
+                { headers: { "Authorisation": `Bearer ${state.curPlayer.access_token}` } }
+            )
+            return response.data;
+        }
+    },
     actions: {
         async loginPlayer({ commit }, { username, password }) {
             const formData = new FormData()
