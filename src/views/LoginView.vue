@@ -55,7 +55,6 @@
                     </h3>
                 </v-card>
             </v-col>
-            <v-btn @click="$notify('Login failed')"></v-btn>
         </v-row>
     </v-container>
 </template>

@@ -189,13 +189,6 @@ export default Vue.extend({
         },
     }),
 
-    mounted() {
-        window.addEventListener('resize', this.onResize);
-    },
-    unmounted() {
-        window.removeEventListener('resize', this.onResize);
-    },
-
     methods: {
         onEnd(win) {
             if (win == this.ori) this.won = 1;
@@ -207,6 +200,7 @@ export default Vue.extend({
         },
 
         startGame(ori) {
+            console.log(ori)
             this.ori = ori;
             this.$refs.board.restartBoard(ori);
         },

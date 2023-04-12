@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
 from flask import jsonify, request
 
 import MySQLdb, re
@@ -18,4 +18,12 @@ def search(id = None):
     game['is_public'] = bool(game['is_public'])
     game['is_rated'] = bool(game['is_rated'])
 
-    return game
+    # Check if player can access the game
+    if (game['is_public']): return game
+
+    player = get_jwt_identity()
+    if player and game['white_player'] == player: return game
+    if player and game['black_player'] == player: return game
+
+    # Player should not see the game
+    return "No such ID", 403

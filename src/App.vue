@@ -69,6 +69,16 @@
                             <v-list-item-title class='text-button'> Logout </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
+
+                    <!-- Profile Button -->
+                    <v-list-item v-else class="list_bot" @click="loggedIn = false; $router.push('/')" color="primary">
+                        <v-list-item-icon>
+                            <v-icon>mdi-account-variant</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content color="primary">
+                            <v-list-item-title class='text-button'> My Profile </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                 </v-list>
 
             </template>

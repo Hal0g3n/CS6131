@@ -26,6 +26,14 @@ export default new Vuex.Store({
                 { headers: { "Authorisation": `Bearer ${state.curPlayer.access_token}` } }
             )
             return response.data;
+        },
+
+        getGame: (state) => async (id = "") => {
+            let response = await axios.get(
+                `http://chessible.pythonanywhere.com/game/${id}`,
+                { headers: { "Authorisation": `Bearer ${state.curPlayer.access_token}` } }
+            )
+            return response
         }
     },
     actions: {
