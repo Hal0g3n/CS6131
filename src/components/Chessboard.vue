@@ -1,5 +1,6 @@
 <template>
     <chessboard @onMove="onMove" fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" ref="__board"/>
+
 </template>
 
 <script>
@@ -14,14 +15,15 @@ export default Vue.extend({
     methods: {
         onMove(data) {
             if ("turn" in data) return;
-            forceEnd();
+            this.forceEnd();
         },
-
+        
         forceEnd() {
+            console.log(this.$refs.__board.game);
             this.$emit(
                 "onEnd",
-                this.$refs.__board.game.isDraw() ? 'draw' : // If draw
-                    this.$refs.__board.turn() == 'w' ? 'black' : 'white' // Current turn is loser
+                this.$refs.__board.game.in_draw() ? 'draw' : // If draw
+                    this.$refs.__board.game.turn() == 'w' ? 'black' : 'white' // Current turn is loser
             );
         },
 
@@ -41,6 +43,10 @@ export default Vue.extend({
 
             if (this.$refs.__board.board.state.orientation != n_ori)
                 this.$refs.__board.board.toggleOrientation();
+        },
+        
+        onResize() {
+            document.body.dispatchEvent(new Event('chessground.resize'))
         }
     },
 

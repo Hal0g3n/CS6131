@@ -101,18 +101,19 @@ export default {
                 return;
             }
             
-            
-            const formData = new FormData()
-            formData.append('username', this.username)
-            formData.append('password', this.password)
-            
-            let res = await axios.post('http://chessible.pythonanywhere.com/register', formData, {})
-            console.log(res.status)
-            if (res.status == 200) {
-                alert("Registration Complete: Try logging in now :)");
-                this.$router.push("/login")
+            // If register Player was successful
+            if (await this.$store.dispatch("registerPlayer", {
+                username: this.username,
+                password: this.password,
+            })) this.$router.push("/login"); // Go to logi
+            else {
+                // State the error
+                this.$notify({
+                    type: "error",
+                    title: 'Registration Failed',
+                    text: 'Error connecting to !'
+                });
             }
-            else {alert("Username Taken: Try another username"); return;}
         },
     },
 };

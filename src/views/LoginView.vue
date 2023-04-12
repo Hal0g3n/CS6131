@@ -85,13 +85,11 @@ export default {
                 // State the error
                 this.$notify({
                     type: "error",
-                    title: 'Authorization',
-                    text: 'You have been logged in!'
+                    title: 'Authorisation Failed',
+                    text: 'Incorrect Username/Password!'
                 }); 
             }
         }
     }
 };
 </script>
-
-<style></style>

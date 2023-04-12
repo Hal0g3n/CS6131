@@ -1,13 +1,13 @@
-from __main__ import app
+from flask_app import app
 import player, team, game
 
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
-@app.route("/login", methods=["POST"])
+@app.route("/player/login", methods=["POST"])
 def login(): return player.login()
 
-@app.route('/create/player', methods=['POST'])
+@app.route('/player/new', methods=['POST'])
 def register(): return player.register()
 
 @app.route("/player/<username>", methods=["POST"])
@@ -23,11 +23,13 @@ def searchTeam(): return team.search()
 @jwt_required(optional=True)
 def getTeam(id): return team.search(id = id)
 
+
 @app.route("/auth", methods=['POST'])
 @jwt_required()
 def auth(): return "hello"
 
-@app.route('/game/<id>', methods=['GET'])
+
+@app.route('/games/<id>', methods=['GET'])
 @jwt_required(optional=True)
 def getGame(id): return game.search(id = id)
 

@@ -100,11 +100,29 @@
 
         <!-- Router View -->
         <v-main>
-            <router-view @notify="notify"></router-view>
+            <router-view></router-view>
         </v-main>
 
         <!-- Notification -->
-        <notifications position="bottom right" classes="n-light" :max="3" width="30%" />
+        <notifications position="bottom right" classes="my-style" animation-name="v-fade-left" :max="3" width="min(30%, 500px)">
+
+            <template slot="body" slot-scope="props">
+                <div class="custom-template">
+                    <div class="custom-template-icon">
+                        <i class="icon ion-android-checkmark-circle"></i>
+                    </div>
+                    <div class="custom-template-content">
+                        <div class="custom-template-title">
+                            {{ props.item.title }}
+                        </div>
+                        <div class="custom-template-text" v-html="props.item.text"></div>
+                    </div>
+                    <div class="custom-template-close" @click="props.close">
+                        <i class="icon ion-android-close"></i>
+                    </div>
+                </div>
+            </template>
+        </notifications>
     </v-app>
 </template>
 
@@ -131,7 +149,6 @@ export default Vue.extend({
     }),
 
     mounted() {
-        console.log(this.$route.name);
         this.onResize();
         window.addEventListener("resize", this.onResize, { passive: true });
     },
@@ -164,6 +181,19 @@ export default Vue.extend({
 .together {
     padding: 0px 1px;
 }
+
+.my-style {
+    padding: 0px;
+    margin: 0 5px 5px;
+    font-size: 12px;
+    color: #ffffff;
+    background: #44A4FC !important;
+    border-left: 5px solid #187FE7;
+}
+</style>
+
+<style lang="scss">
+@import "./assets/stylesheets/notify.scss"
 </style>
 
 <style scoped>

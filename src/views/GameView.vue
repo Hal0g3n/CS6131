@@ -191,6 +191,7 @@ export default Vue.extend({
 
     methods: {
         onEnd(win) {
+            console.log(win)
             if (win == this.ori) this.won = 1;
             else if (win == "draw") this.won = 0;
             else this.won = -1;
@@ -200,16 +201,10 @@ export default Vue.extend({
         },
 
         startGame(ori) {
-            console.log(ori)
             this.ori = ori;
             this.$refs.board.restartBoard(ori);
         },
-
-        onResize() {
-            document.body.dispatchEvent(new Event('chessground.resize'))
-        }
     },
-
 });
 </script>
 

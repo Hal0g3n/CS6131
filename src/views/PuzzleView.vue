@@ -58,7 +58,6 @@ export default Vue.extend({
         },
 
         startGame(ori) {
-            console.log(ori)
             this.ori = ori;
             this.$refs.board.restartBoard(ori);
         },
