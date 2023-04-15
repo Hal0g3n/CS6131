@@ -1,8 +1,9 @@
 <template>
+    <!-- TODO: Style this -->
     <v-card>
         <v-img :src=" team.icon " height="200px" />
         <v-card-title>{{ team.team_name }}</v-card-title>
-        <v-card-text>{{ team.about }}</v-card-text>
+        <v-card-text>{{ team.about_team }}</v-card-text>
     </v-card>
 </template>
 

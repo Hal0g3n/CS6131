@@ -26,9 +26,24 @@ const routes: Array<RouteConfig> = [
         component: () => import(/* webpackChunkName: "about" */ './views/RegisterView.vue')
     },
     {
-        path: '/teams',
+        path: '/teams/:teamId',
         name: 'teams',
         component: () => import(/* webpackChunkName: "about" */ './views/TeamView.vue')
+    },
+    {
+        path: '/teams',
+        name: 'teams',
+        component: () => import(/* webpackChunkName: "about" */ './views/TeamSearch.vue')
+    },
+    {
+        path: '/tournament/:tourId',
+        name: 'tournament',
+        component: () => import(/* webpackChunkName: "about" */ './views/TournamentView.vue')
+    },
+    {
+        path: '/tournament',
+        name: 'tournament',
+        component: () => import(/* webpackChunkName: "about" */ './views/TournamentSearch.vue')
     },
     {
         path: '/login',
@@ -38,12 +53,12 @@ const routes: Array<RouteConfig> = [
     {
         path: '/profile/:username',
         name: 'profile',
-        component: () => import(/* webpackChunkName: "about" */ './views/ProfileView.vue')
+        component: () => import(/* webpackChunkName: "about" */ './views/UserProfile.vue')
     },
     {
         path: '/profile/',
         name: 'profile',
-        component: () => import(/* webpackChunkName: "about" */ './views/ProfileView.vue')
+        component: () => import(/* webpackChunkName: "about" */ './views/UserSearch.vue')
     },
     {
         path: '/ranking',
