@@ -1,40 +1,48 @@
 <template>
     <div>
-        <input type="text" v-model="searchInput" placeholder="Search..." @input="searchItems">
-        <ul>
-            <li v-for="item in store.getters.getTeam()" :key="item.id">{{ item.name }}</li>
-        </ul>
+        <v-card class="mx-auto" color="grey-lighten-3" max-width="400">
+            <v-card-text>
+                <v-text-field density="compact" variant="solo" label="Search templates"
+                    append-inner-icon="mdi-magnify" single-line hide-details v-model="search"/>
+            </v-card-text>
+        </v-card>
+
+        <v-container>
+            <v-row>
+                <v-col v-for="Team in filteredTeams" :key="Team.id" cols="12" sm="6" md="4">
+                    <TeamCard :team="Team" />
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
-<script>
-import axios from 'axios';
+<script lang="ts">
+import axios from 'axios'
+import TeamCard from '../components/TeamCard.vue'
 
 export default {
+    components: {
+        TeamCard
+    },
     data() {
         return {
-            items: [],
-            searchInput: '',
+            search: '',
+            teams: []
         }
     },
-    mounted() {
-        this.fetchItems();
-    },
-    methods: {
-        fetchItems() {
-            const query = this.searchInput ? `?q=${this.searchInput}` : '';
-            axios.get(`http://chessible.pythonanywhere.com/teams${query}`)
-                .then(response => {
-                    this.items = response.data;
-                    this.filteredItems = this.items;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        },
-        searchItems() {
-            this.fetchItems();
+    computed: {
+        filteredTeams() {
+            return this.teams.filter(team => {
+                return team.team_name.toLowerCase().includes(this.search.toLowerCase())
+            })
         }
+    },
+
+    async created() {
+        this.teams = (await axios.get("http://127.0.0.1:5000/teams")).data
+        console.log(this.teams)
     }
 }
 </script>
+

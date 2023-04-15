@@ -13,19 +13,6 @@
                 </v-tab>
 
                 <v-tab-item>
-                    <div>
-                        <v-switch
-                            inset
-                            label="Friends Only"
-                            style="
-                                max-width: fit-content;
-                                margin-left: auto;
-                                margin-right: 5%;
-                            "
-                            v-model="chess_friend_toggle"
-                        />
-                    </div>
-
                     <v-card-title>
                         <v-spacer></v-spacer>
                         <v-text-field
@@ -57,30 +44,6 @@
                 </v-tab>
 
                 <v-tab-item>
-                    <div>
-                        <v-switch
-                            inset
-                            label="Friends Only"
-                            style="
-                                max-width: fit-content;
-                                margin-left: auto;
-                                margin-right: 5%;
-                            "
-                            v-model="puzzle_friend_toggle"
-                        />
-                    </div>
-
-                    <v-card-title>
-                        <v-spacer></v-spacer>
-                        <v-text-field
-                            v-model="puzzle_search"
-                            append-icon="mdi-magnify"
-                            label="Search"
-                            single-line
-                            hide-details
-                            style="margin-right: 5%; max-width: 45%"
-                        ></v-text-field>
-                    </v-card-title>
 
                     <v-data-table
                         no-data-text="Go make some friends!"
@@ -121,8 +84,6 @@ export default {
                 value: "delta",
             },
         ],
-        chess_friend_toggle: false,
-        puzzle_friend_toggle: false,
 
         top_chess: [],
         top_puzzle: [],

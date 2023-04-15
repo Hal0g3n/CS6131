@@ -1,4 +1,4 @@
-from flask_app import app
+from __main__ import app
 import player, team, game
 
 from flask_jwt_extended import jwt_required
@@ -10,7 +10,7 @@ def login(): return player.login()
 @app.route('/player/new', methods=['POST'])
 def register(): return player.register()
 
-@app.route("/player/<username>", methods=["POST"])
+@app.route("/player/<username>", methods=["GET"])
 @jwt_required(optional = True)
 def readUser(username): return player.read(username)
 

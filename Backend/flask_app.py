@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mysqldb import MySQL
-import MySQLdb.cursors
 import re
 import pickle
 from flask_cors import CORS
@@ -73,4 +72,5 @@ def logout():
 import routes
 
 if __name__ == '__main__':
+    print(app.url_map)
     app.run(debug=True)

@@ -1,28 +1,13 @@
 <template>
     <div class="profile flex-column" style="width: 100%">
         <!-- Profile Card -->
-        <v-card
-            elevation="12"
-            class="pb-4"
-            style="margin: 3vh 25vw"
-            color="primary lighten-2"
-            height="25vh"
-        >
-            <div
-                class="d-flex flex-no-wrap justify-space-between align-center"
-                style="height: 100%; width: 100%"
-            >
+        <v-card elevation="12" class="pb-4" style="margin: 3vh 25vw" color="primary lighten-2" height="25vh">
+            <div class="d-flex flex-no-wrap justify-space-between align-center" style="height: 100%; width: 100%">
                 <div>
-                    <v-card-title
-                        style="text-align: left"
-                        class="text-h3 font-weight-medium mb-auto"
-                        v-text="player.username"
-                    ></v-card-title>
-                    <v-card-title
-                        style="text-align: left"
-                        class="text-h5 font-weight-bold mt-auto"
-                        v-text="player.rating"
-                    ></v-card-title>
+                    <v-card-title style="text-align: left" class="text-h3 font-weight-medium mb-auto"
+                        v-text="player.username"></v-card-title>
+                    <v-card-title style="text-align: left" class="text-h5 font-weight-bold mt-auto"
+                        v-text="player.rating"></v-card-title>
                 </div>
 
                 <v-avatar class="ma-3" size="15vh" tile>
@@ -36,13 +21,7 @@
             <v-toolbar flat color="primary" dark>
                 <v-toolbar-title class="text-h3 ma-5">Statistics</v-toolbar-title>
             </v-toolbar>
-            <v-tabs
-                vertical
-                grow
-                color="secondary darken-1"
-                background-color="transparent"
-                icon
-            >
+            <v-tabs vertical grow color="secondary darken-1" background-color="transparent" icon>
                 <v-tab>
                     <v-icon left> mdi-information </v-icon>
                     About
@@ -51,45 +30,15 @@
 
                 <v-tab-item>
                     <v-card height="60vh" class="d-flex align-center">
-                        <v-card
-                            elevation="10"
-                            class="ma-10"
-                            width="calc(40% - 40px)"
-                            height="35vh"
-                        >
+                        <v-card elevation="10" class="ma-10" width="calc(40% - 40px)" height="35vh">
                             <v-card-title>About Me!</v-card-title>
                             <v-card-text>{{ player.about }}</v-card-text>
                         </v-card>
-                        <div style="flex-grow: 1; margin-right: 2%;">
-                            <p class="text-h4">Recent Games</p>
-                            <v-data-table
-                                height="30vh"
-                                :headers="headers"
-                                :items="games"
-                                class="elevation-1"
-                                items-per-page="6"
-                                no-data-text="No games played so far..."
-                                :footer-props="{
-                                    showFirstLastPage: true,
-                                    disableItemsPerPage: true
-                                }"
-                            >
-                                <template v-slot:item.result="{ item }">
-                                    <v-icon v-if="item.result === 1" color="green">mdi-plus</v-icon>
-                                    <v-icon v-else-if="item.result === 0" color="grey">mdi-equal</v-icon>
-                                    <v-icon v-else color="red">mdi-minus</v-icon>
-                                </template>
-                                <template v-slot:item.date="{ item }">
-                                    {{item.date.toLocaleDateString("en-UK", {day: "numeric", month:"short", year: "numeric"})}}
-                                </template>
-                                <template v-slot:item.side="{ item }">
-                                    <div v-if="item.side == 'black'" style="width: 2vmin; height: 2vmin; border: 2px solid var(--v-primary-base); background-color: #616161"/>
-                                    <div v-else style="width: 2vmin; height: 2vmin; border: 2px solid var(--v-primary-base); background-color: #eeeeee"/>
-                                </template>
-                            </v-data-table>
-                        </div>
+
                     </v-card>
                 </v-tab-item>
+
+
 
                 <v-tab>
                     <v-icon left> mdi-checkerboard </v-icon>
@@ -98,42 +47,54 @@
                 </v-tab>
 
                 <v-tab-item>
-                    <v-card height="60vh" class="pa-5" flat>
-                        <div
-                            style="width: 50%; justify: "
-                            class="d-flex justify-center align-center"
-                        >
-                            <v-btn
-                                v-for="range in ranges"
-                                :key="range.name"
-                                :id="range.name"
-                                @click="rezoomClassicalData(range.name)"
-                                :outlined="classicalSelection !== range.name"
-                                depressed
-                                color="primary"
-                                class="ma-1"
-                            >
-                                {{ range.display }}
-                            </v-btn>
-                            <v-spacer />
-                            <div class="text-h5">Rating History</div>
+                    <v-card height="60vh" class="pa-5 d-flex align-center" flat>
+
+                        <!-- The graph -->
+                        <div style="width: 50%; height:100%" class="pr-5">
+                            <div class="d-flex justify-center align-center">
+                                <v-btn v-for="range in ranges" :key="range.name" :id="range.name"
+                                    @click="rezoomClassicalData(range.name)" :outlined="classicalSelection !== range.name"
+                                    depressed color="primary" class="ma-1">
+                                    {{ range.display }}
+                                </v-btn>
+                                <v-spacer />
+                                <div class="text-h5">Rating History</div>
+                            </div>
+
+                            <LineChart ref="classicalChart" width="100%" height="80%" type="area" style=".svg {overflow: visible;}" :options="chartOptions" :series="classical_data" />
                         </div>
 
-                        <LineChart
-                            ref="classicalChart"
-                            width="50%"
-                            height="80%"
-                            type="area"
-                            style="
-                                .svg {
-                                    overflow: visible;
-                                }
-                            "
-                            :options="chartOptions"
-                            :series="classical_data"
-                        />
+                        <!-- The table -->
+                        <div style="flex-grow: 1; margin-right: 2%;">
+                            <p class="text-h4">Recent Games</p>
+                            <v-data-table height="30vh" :headers="headers" :items="games" class="elevation-1"
+                                items-per-page="6" no-data-text="No games played so far..." :footer-props="{
+                                    showFirstLastPage: true,
+                                    disableItemsPerPage: true
+                                }">
+                                <template v-slot:item.result="{ item }">
+                                    <v-icon v-if="item.result === 1" color="green">mdi-plus</v-icon>
+                                    <v-icon v-else-if="item.result === 0" color="grey">mdi-equal</v-icon>
+                                    <v-icon v-else color="red">mdi-minus</v-icon>
+                                </template>
+                                <template v-slot:item.date="{ item }">
+                                    {{ item.date.toLocaleDateString("en-UK", {
+                                        day: "numeric", month: "short", year:
+                                            "numeric"
+                                    }) }}
+                                </template>
+                                <template v-slot:item.side="{ item }">
+                                    <div v-if="item.side == 'black'"
+                                        style="width: 2vmin; height: 2vmin; border: 2px solid var(--v-primary-base); background-color: #616161" />
+                                    <div v-else
+                                        style="width: 2vmin; height: 2vmin; border: 2px solid var(--v-primary-base); background-color: #eeeeee" />
+                                </template>
+                            </v-data-table>
+                        </div>
                     </v-card>
                 </v-tab-item>
+
+
 
                 <v-tab>
                     <v-icon left> mdi-puzzle </v-icon>
@@ -142,37 +103,50 @@
                 </v-tab>
 
                 <v-tab-item>
-                    <v-card height="60vh" class="pa-5" flat>
-                        <div
-                            style="width: 50%; justify: "
-                            class="d-flex justify-center align-center"
-                        >
-                            <v-btn
-                                v-for="range in ranges"
-                                :key="range.name"
-                                :id="range.name"
-                                @click="rezoomPuzzleData(range.name)"
-                                :outlined="puzzleSelection !== range.name"
-                                depressed
-                                color="primary"
-                                class="ma-1"
-                            >
-                                {{ range.display }}
-                            </v-btn>
-                            <v-spacer />
-                            <div class="text-h5">Puzzle History</div>
+                    <v-card height="60vh" class="pa-5 d-flex align-center" flat>
+                        <!-- The graph -->
+                        <div style="width: 50%; height:100%" class="pr-5">
+                            <div class="d-flex justify-center align-center">
+                                <v-btn v-for="range in ranges" :key="range.name" :id="range.name"
+                                    @click="rezoomClassicalData(range.name)" :outlined="classicalSelection !== range.name"
+                                    depressed color="primary" class="ma-1">
+                                    {{ range.display }}
+                                </v-btn>
+                                <v-spacer />
+                                <div class="text-h5">Rating History</div>
+                            </div>
+
+                            <LineChart ref="classicalChart" width="100%" height="80%" type="area" style=".svg {overflow: visible;}" :options="chartOptions" :series="puzzle_data" />
                         </div>
 
-                        <LineChart
-                            ref="puzzleChart"
-                            width="50%"
-                            height="80%"
-                            type="area"
-                            :options="chartOptions"
-                            :series="puzzle_data"
-                        />
+                        <div style="flex-grow: 1; margin-right: 2%;">
+                            <p class="text-h4">Recent Puzzles</p>
+                            <v-data-table height="30vh" :headers="headers" :items="games" class="elevation-1" items-per-page="6"
+                                no-data-text="No games played so far..." :footer-props="{
+                                    showFirstLastPage: true,
+                                    disableItemsPerPage: true
+                                }">
+                                <template v-slot:item.result="{ item }">
+                                    <v-icon v-if="item.result === 1" color="green">mdi-plus</v-icon>
+                                    <v-icon v-else-if="item.result === 0" color="grey">mdi-equal</v-icon>
+                                    <v-icon v-else color="red">mdi-minus</v-icon>
+                                </template>
+                                <template v-slot:item.date="{ item }">
+                                    {{ item.date.toLocaleDateString("en-UK", {
+                                        day: "numeric", month: "short", year: "numeric"
+                                    }) }}
+                                </template>
+                                <template v-slot:item.side="{ item }">
+                                    <div v-if="item.side == 'black'"
+                                        style="width: 2vmin; height: 2vmin; border: 2px solid var(--v-primary-base); background-color: #616161" />
+                                    <div v-else
+                                        style="width: 2vmin; height: 2vmin; border: 2px solid var(--v-primary-base); background-color: #eeeeee" />
+                                </template>
+                            </v-data-table>
+                        </div>
                     </v-card>
                 </v-tab-item>
+
             </v-tabs>
         </v-card>
     </div>
@@ -213,7 +187,7 @@ export default Vue.extend({
                     stops: [0, 90, 100],
                 },
             },
-                        
+
             noData: {
                 text: 'Loading...'
             },
@@ -229,10 +203,10 @@ export default Vue.extend({
         puzzleSelection: "all",
 
         ranges: [
-            {display: "1M", name:"one_month"},
-            {display: "6M", name:"six_months"},
-            {display: "1Y", name:"one_year"},
-            {display: "All", name:"all"},
+            { display: "1M", name: "one_month" },
+            { display: "6M", name: "six_months" },
+            { display: "1Y", name: "one_year" },
+            { display: "All", name: "all" },
         ],
 
         player: {
@@ -254,7 +228,7 @@ export default Vue.extend({
                 sortable: false,
                 value: 'side',
             },
-            { text: "Result", value: "result"},
+            { text: "Result", value: "result" },
             { text: 'Moves', value: 'moves' },
             { text: 'Date', value: 'date' }
         ],
@@ -344,13 +318,13 @@ export default Vue.extend({
                 case "all": left = this.classical_data[0]['data'][0][0]; break;
                 default:
             }
-            
+
             this.$refs.classicalChart.zoomX(
                 left.getTime(),
                 new Date().getTime() // Today
             );
         },
-        
+
         rezoomPuzzleData(timeline) {
             this.puzzleSelection = timeline;
             var right = this.puzzle_data[0]['data'][this.puzzle_data[0]['data'].length - 1][0];
@@ -363,7 +337,7 @@ export default Vue.extend({
                 case "all": left = this.puzzle_data[0]['data'][0][0]; break;
                 default:
             }
-            
+
             this.$refs.puzzleChart.zoomX(
                 left.getTime(),
                 new Date().getTime() // Today
@@ -372,7 +346,7 @@ export default Vue.extend({
     },
     components: { LineChart: VueApexCharts },
 
-    beforeMount: async function() {
+    beforeMount: async function () {
         var data = await fetch("https://lichess.org/api/user/penguingim1/rating-history").then((response) => response.json())
 
         for (var i in data[0]['points']) {

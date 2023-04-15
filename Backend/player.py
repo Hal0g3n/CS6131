@@ -59,12 +59,12 @@ def register():
 
     return "Success", 200
 
-
 def search(): pass
 
 def update(): pass
 
-def read(username):
+def read(username): 
+    return generate_password_hash("password")
     pass
 
 def delete():
