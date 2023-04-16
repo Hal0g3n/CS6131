@@ -4,7 +4,8 @@ module.exports = defineConfig({
     publicPath: process.env.NODE_ENV == "production" ? "/CS6131/" : "/",
     lintOnSave: false,
     transpileDependencies: [
-        'vuetify'
+        'vuetify',
+        'vuex-persist'
     ],
     chainWebpack: (config) => {
         config.module

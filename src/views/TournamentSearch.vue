@@ -15,7 +15,7 @@
         <v-container class="my-4 mx-auto rounded-xl" style="max-width: max(65%, 867px)">
             <v-row>
                 <v-col v-for="Team in filteredTeams" :key="Team.id" cols="12" sm="6" md="4">
-                    <TeamCard :team="Team" />
+                    <TeamCard :team="Team"/>
                 </v-col>
             </v-row>
         </v-container>

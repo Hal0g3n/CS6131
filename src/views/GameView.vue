@@ -192,10 +192,13 @@ export default Vue.extend({
     methods: {
         onEnd(win) {
             console.log(win)
+            console.log(this.ori)
+            console.log(this.won)
+            console.log(this.dialog)
             if (win == this.ori) this.won = 1;
             else if (win == "draw") this.won = 0;
             else this.won = -1;
-
+            
             this.dialog = true;
             this.ori = "";
         },

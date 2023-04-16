@@ -14,6 +14,8 @@ export default Vue.extend({
     components: { chessboard },
     methods: {
         onMove(data) {
+            console.log(data)
+            console.log(this.$refs.__board.game.game_over())
             if ("turn" in data) return;
             this.forceEnd();
         },

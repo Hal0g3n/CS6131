@@ -32,7 +32,7 @@
                     <v-card height="60vh" class="d-flex align-center">
                         <v-card elevation="10" class="ma-10" width="calc(40% - 40px)" height="35vh">
                             <v-card-title>About Me!</v-card-title>
-                            <v-card-text>{{ player.about }}</v-card-text>
+                            <v-card-text>{{ player.about_me }}</v-card-text>
                         </v-card>
 
                     </v-card>
@@ -64,7 +64,7 @@
                             <LineChart ref="classicalChart" width="100%" height="80%" type="area" style=".svg {overflow: visible;}" :options="chartOptions" :series="classical_data" />
                         </div>
 
-                        <!-- The table -->
+                        <!-- The history table -->
                         <div style="flex-grow: 1; margin-right: 2%;">
                             <p class="text-h4">Recent Games</p>
                             <v-data-table height="30vh" :headers="headers" :items="games" class="elevation-1"
@@ -108,7 +108,7 @@
                         <div style="width: 50%; height:100%" class="pr-5">
                             <div class="d-flex justify-center align-center">
                                 <v-btn v-for="range in ranges" :key="range.name" :id="range.name"
-                                    @click="rezoomClassicalData(range.name)" :outlined="classicalSelection !== range.name"
+                                    @click="rezoomPuzzleData(range.name)" :outlined="puzzleSelection !== range.name"
                                     depressed color="primary" class="ma-1">
                                     {{ range.display }}
                                 </v-btn>
@@ -116,9 +116,10 @@
                                 <div class="text-h5">Rating History</div>
                             </div>
 
-                            <LineChart ref="classicalChart" width="100%" height="80%" type="area" style=".svg {overflow: visible;}" :options="chartOptions" :series="puzzle_data" />
+                            <LineChart ref="puzzleChart" width="100%" height="80%" type="area" style=".svg {overflow: visible;}" :options="chartOptions" :series="puzzle_data" />
                         </div>
 
+                        <!-- The history table -->
                         <div style="flex-grow: 1; margin-right: 2%;">
                             <p class="text-h4">Recent Puzzles</p>
                             <v-data-table height="30vh" :headers="headers" :items="games" class="elevation-1" items-per-page="6"
@@ -154,6 +155,7 @@
 
 <script lang="js">
 import Vue from "vue";
+import { mapGetters } from "vuex";
 import VueApexCharts from "vue-apexcharts";
 
 export default Vue.extend({
@@ -196,6 +198,8 @@ export default Vue.extend({
                 enabled: false,
             },
         },
+
+        player: {},
         classical_data: [],
         puzzle_data: [],
 
@@ -208,13 +212,6 @@ export default Vue.extend({
             { display: "1Y", name: "one_year" },
             { display: "All", name: "all" },
         ],
-
-        player: {
-            username: "Halogen",
-            rating: 100,
-            avatar: "https://cdn.discordapp.com/avatars/340785972545454080/6cf1fe5e726470b1903236d2638d5a58.png?size=1024",
-            about: "Hello I am new to chess! Let's all have fun together!"
-        },
 
         headers: [
             {
@@ -305,6 +302,7 @@ export default Vue.extend({
             }
         ]
     }),
+
     methods: {
         rezoomClassicalData(timeline) {
             this.classicalSelection = timeline;
@@ -321,7 +319,7 @@ export default Vue.extend({
 
             this.$refs.classicalChart.zoomX(
                 left.getTime(),
-                new Date().getTime() // Today
+                right // Today
             );
         },
 
@@ -338,34 +336,33 @@ export default Vue.extend({
                 default:
             }
 
+            console.log(left, right)
+
             this.$refs.puzzleChart.zoomX(
                 left.getTime(),
-                new Date().getTime() // Today
+                right // Today
             );
         },
     },
     components: { LineChart: VueApexCharts },
 
-    beforeMount: async function () {
+    beforeCreate() {
+
+    },
+
+    async beforeMount() {
         var data = await fetch("https://lichess.org/api/user/penguingim1/rating-history").then((response) => response.json())
-
-        for (var i in data[0]['points']) {
-            this.classical_data.push([new Date(data[0]['points'][i][0], data[0]['points'][i][1], data[0]['points'][i][2]), data[0]['points'][i][3]]);
-        }
-
-        for (var i in data[13]['points']) {
-            this.puzzle_data.push([new Date(data[13]['points'][i][0], data[13]['points'][i][1], data[13]['points'][i][2]), data[13]['points'][i][3]]);
-        }
-
-        this.player.username = this.$route.params.username || this.$store.state.curPlayer.username;
+        this.player = await this.$store.getters.getPlayer(this.$route.params.username)
+        this.player.rating_history.map(point => [new Date(point.datetime), point.rating])
+        this.player.puzzle_history.map(point => [new Date(point.datetime), point.rating])
 
         this.classical_data = [{
-            data: this.classical_data,
+            data: this.player.rating_history.map(point => [new Date(point.datetime), point.rating]),
             name: "Classical"
         }];
 
         this.puzzle_data = [{
-            data: this.puzzle_data,
+            data: this.player.puzzle_history.map(point => [new Date(point.datetime), point.rating]),
             name: "Puzzles"
         }];
     }

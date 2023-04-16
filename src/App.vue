@@ -61,7 +61,7 @@
                     </v-list-item>
 
                     <!-- Logout Button -->
-                    <v-list-item v-else class="list_bot" @click="loggedIn = false; $router.push('/')" color="primary">
+                    <v-list-item v-else class="list_bot" @click="$store.dispatch('logoutPlayer'); $router.push('/')" color="primary">
                         <v-list-item-icon>
                             <v-icon>mdi-logout-variant</v-icon>
                         </v-list-item-icon>
@@ -71,7 +71,7 @@
                     </v-list-item>
 
                     <!-- Profile Button -->
-                    <v-list-item v-else class="list_bot" @click="loggedIn = false; $router.push('/')" color="primary">
+                    <v-list-item v-else class="list_bot" @click="$store.dispatch('logoutPlayer'); $router.push('/')" color="primary">
                         <v-list-item-icon>
                             <v-icon>mdi-account-variant</v-icon>
                         </v-list-item-icon>
@@ -139,11 +139,11 @@ export default Vue.extend({
         routes: [
             { name: "Play", icon: "mdi-chess-king", path: "/play", showOnLogin: true },
             { name: "Puzzles", icon: "mdi-puzzle", path: "/puzzles", showOnLogin: true },
-            { name: "Profile", icon: "mdi-account-circle", path: "/profile", showOnLogin: false },
+            { name: "Players", icon: "mdi-account-circle", path: "/player", showOnLogin: false },
             { name: "Teams", icon: "mdi-account-multiple", path: "/teams", showOnLogin: true },
             { name: "Rankings", icon: "mdi-chart-box-outline", path: "/ranking", showOnLogin: true },
+            { name: "Tournaments", icon: "mdi-trophy", path: "/tournament", showOnLogin: true },
             { name: "Feedback", icon: "mdi-comment-quote", path: "/feedback", showOnLogin: true },
-            { name: "Tournament", icon: "mdi-trophy", path: "/tournament", showOnLogin: true },
             // TODO: Fix up puzzles in the future
         ],
     }),

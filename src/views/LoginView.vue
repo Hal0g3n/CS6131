@@ -25,6 +25,8 @@
                                 name="username"
                                 label="Username"
                                 type="text"
+                                
+                                @keydown.enter="login"
                             ></v-text-field>
                             <v-text-field
                                 id="password"
@@ -38,6 +40,7 @@
                                 "
                                 :type="showPw ? 'text' : 'password'"
                                 @click:append="showPw = !showPw"
+                                @keydown.enter="login"
                                 class="input-group--focused"
                             ></v-text-field>
                         </v-form>
@@ -79,7 +82,7 @@ export default {
             if (await this.$store.dispatch("loginPlayer", {
                 username: this.username,
                 password: this.password,
-            })) this.$router.push("/profile"); // Go to profile
+            })) this.$router.push("/player/" + this.username); // Go to profile
 
             else { 
                 // State the error
