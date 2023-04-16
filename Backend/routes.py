@@ -50,13 +50,13 @@ def createTeam():
 
 @app.route('/apply/team/<team_id>', methods=['GET', 'POST'])
 @jwt_required()
-def apply(team_id):
+def getApplyByTeam(team_id):
     if request.method == 'POST': return applications.create_application(team_id)
     if request.method == 'GET': return applications.get_applications(team_id = team_id)
 
 @app.route('/apply/user/', methods=['GET'])
 @jwt_required()
-def apply(): return applications.get_applications()
+def getApplyByUser(): return applications.get_applications(username = request.args.user)
 
 
 @app.route("/auth", methods=['POST'])

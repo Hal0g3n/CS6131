@@ -32,7 +32,7 @@ def create_application(team_id):
     mysql.connection.commit() #commit the insertion
     return "Success!"
 
-def get_applications(team_id = None):
+def get_applications(team_id = None, username = None):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     # If collecting team application data
