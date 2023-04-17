@@ -4,6 +4,7 @@ import VuexPersistence from 'vuex-persist'
 import axios from "axios"
 
 Vue.use(Vuex)
+
 let server = "http://localhost:5000"
 
 export default new Vuex.Store({
@@ -25,9 +26,12 @@ export default new Vuex.Store({
         access_token: ""
     },
     mutations: {
-        updateCurPlayer(state, { curPlayer, token }) {
+        updateCurPlayer(state, curPlayer) {
             state.curPlayer = curPlayer;
-            state.access_token = token
+        },
+        
+        updateToken(state, access_token) {
+            state.access_token = access_token
         }
     },
     getters: {
@@ -36,18 +40,32 @@ export default new Vuex.Store({
         },
 
         getTeams: (state) => async (query = "") => {
-            let response = await axios.get(
-                server + `/teams${query ? `?q=${query}` : ''}`,
-                { headers: { "Authorization": `Bearer ${state.access_token}` } }
-            )
+            
+            let response;
+            if (state.access_token == "")
+                response = await axios.get(
+                    server + `/teams${query ? `?q=${query}` : ''}`,
+                )
+            else
+                response = await axios.get(
+                    server + `/teams${query ? `?q=${query}` : ''}`,
+                    { headers: { "Authorization": `Bearer ${state.access_token}` } }
+                )
+
             return response.data;
         },
 
         getTeam: (state) => async (id: number) => {
-            let response = await axios.get(
-                server + `/teams/${id}`,
-                { headers: { "Authorization": `Bearer ${state.access_token}` } }
-            )
+            let response;
+            if (state.access_token == "")
+                response = await axios.get(
+                    server + `/teams/${id}`,
+                )
+            else
+                response = await axios.get(
+                    server + `/teams/${id}`,
+                    { headers: { "Authorization": `Bearer ${state.access_token}` } }
+                )
             return response.data;
         },
 
@@ -60,17 +78,32 @@ export default new Vuex.Store({
         },
 
         getPlayer: (state) => async (username: string) => {
-            let response = await axios.get(
-                server + `/player/${username}`,
-                { headers: { "Authorization": `Bearer ${state.access_token}` } }
-            )
+            let response;
+            if (state.access_token == "")
+                response = await axios.get(
+                    server + `/player/${username}`,
+                )
+            else
+                response = await axios.get(
+                    server + `/player/${username}`,
+                    { headers: { "Authorization": `Bearer ${state.access_token}` } }
+                )
 
-            return response.data
+            return response.data;
         },
 
         getApplications: (state) => async (id: string) => {
             let response = await axios.get(
-                server + `/apply/${id}`,
+                server + `/apply/team/${id}`,
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+            
+            return response.data
+        },
+
+        getUserApplications: (state) => async () => {
+            let response = await axios.get(
+                server + `/apply/user/${state.curPlayer.username}`,
                 { headers: { "Authorization": `Bearer ${state.access_token}` } }
             )
             
@@ -89,36 +122,115 @@ export default new Vuex.Store({
             let res = await axios.post(server + '/player/login', formData, {})
 
             if ('access_token' in res.data) {
-                commit("updateCurPlayer", { curPlayer: {}, token: res.data['access_token'] });
-                commit("updateCurPlayer", { curPlayer: await getters.getPlayer(username), token: res.data['access_token'] });
+                commit("updateToken", res.data['access_token']);
+                commit("updateCurPlayer", await getters.getPlayer(username));
                 return true;
             }
 
         },
 
         async logoutPlayer({ commit }) {
-            commit("updateCurPlayer", { curPlayer: {}, token: '' });
+            commit("updateCurPlayer", {});
+            commit("updateToken", "");
             return true;
         },
 
         async makeApplication({ state }, { team_id, message }) {
+            console.log(team_id, message)
             const formData = new FormData();
             formData.append('message', message);
 
             let response = await axios.post(
-                server + `/apply/${team_id}`,
+                server + `/apply/team/${team_id}`,
                 formData,
                 { headers: { "Authorization": `Bearer ${state.access_token}` } }
             )
+
+            if (response.status === 200) return true;
+            else return false;
         },
 
-        quitTeam() {
+        async approveApplication({ state }, { team_id, applicant }) {
+            try {
+                const formData = new FormData();
+                formData.append('team_id', team_id);
+                formData.append('applicant', applicant);
 
+                let response = await axios.post(
+                    server + `/apply/approve`,
+                    formData,
+                    { headers: { "Authorization": `Bearer ${state.access_token}` } }
+                )
+
+                if (response.status == 200) return true;
+                return false;
+            }
+            catch (error) {return false;}
+        },
+
+        async rejectApplication({ state }, { id, team_id, applicant }) {
+            try {
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('team_id', team_id);
+                formData.append('applicant', applicant);
+
+                let response = await axios.post(
+                    server + `/apply/delete`,
+                    formData,
+                    { headers: { "Authorization": `Bearer ${state.access_token}` } }
+                )
+
+                if (response.status == 200) return true;
+                return false;
+            }
+            catch (error) {return false;}
+        },
+
+        async createTeam({state, getters, commit}, team_name) {
+            const formData = new FormData();
+            formData.append('team_name', team_name);
+
+            let response = await axios.post(
+                server + `/teams/create`,
+                formData,
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+            
+            // Update Player Information
+            commit("updateCurPlayer", await getters.getPlayer(state.curPlayer.username))
+            return response.data;
+        },
+        
+        async quitTeamMod({state, commit, getters}, ) {
+            let response = await axios.post(
+                server + `/teams/quitMod`,
+                {},
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+            
+            // Update Player Information
+            commit("updateCurPlayer", await getters.getPlayer(state.curPlayer.username))
+
+            return true;
+        },
+        
+        async quitTeam({state, commit, getters}, ) {
+            console.log(state.access_token)
+            let response = await axios.post(
+                server + `/teams/quitTeam`,
+                {},
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+            
+            // Update Player Information
+            commit("updateCurPlayer", await getters.getPlayer(state.curPlayer.username))
+            return true;
         }
     },
-    modules: {},
-
-    plugins: [new VuexPersistence({ storage: window.localStorage, reducer: (state: any) => ({
+        modules: {},
+        
+        plugins: [new VuexPersistence({ storage: window.localStorage, reducer: (state: any) => ({
         curPlayer: state.curPlayer,
         access_token: state.access_token
     }) }).plugin],

@@ -79,6 +79,24 @@ def read(username):
 
     return player
 
+def leaderboard():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    
+    # Query all players and their respective ratings
+    cursor.execute("""
+    SELECT *
+    FROM (SELECT username, avatar, (
+        SELECT rating 
+        FROM Rating_History hist 
+        WHERE hist.username = Players.username 
+        ORDER BY datetime
+        DESC LIMIT 1
+    ) rating FROM Players) rating_table
+    ORDER BY rating DESC LIMIT %s""", (
+        request.args['limit'] if 'limit' in request.args else 30, 
+    ))
+
+    return jsonify(cursor.fetchall())
 
 def search(): pass
 

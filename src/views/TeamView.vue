@@ -32,11 +32,12 @@
         </v-card>
 
 
+        <p class="text-h4 mt-8">Team Members</p>
+
         <div class="d-flex">
             <!-- Left Side -->
-            <div style="width: 65%" class="ma-2 mt-8">
-                <p class="text-h4">Team Members</p>
-                <v-data-table :headers="table_headers" :items="team.players" class="elevation-10" hide-default-header :items-per-page="-1"
+            <div style="width: 65%" class="ma-2">
+                <v-data-table :headers="table_headers" :items="team.players" class="elevation-5" hide-default-header :items-per-page="-1"
                     no-data-text="Loading Members" hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
 
                     <template v-slot:item.ranking="{ index }">
@@ -55,12 +56,12 @@
             </div>
             
             <!-- Right Side -->
-            <div style="width: 35%" class="mt-8 mx-2">
+            <div style="width: 35%" class="mx-2">
                 
-                <v-expansion-panels popout v-model="panels">
+                <v-expansion-panels class="mt-2" accordion v-model="panels">
 
                     <!-- Show Moderators -->
-                    <v-expansion-panel class="primary lighten-3">
+                    <v-expansion-panel class="elevation-10">
                         <v-expansion-panel-header>
                             Moderators
                         </v-expansion-panel-header>
@@ -81,7 +82,7 @@
                     </v-expansion-panel>
 
                     <!-- Only for moderators -->
-                    <v-expansion-panel class="primary lighten-3" v-if="$store.state.curPlayer.mod_start_date && $route.params.teamId === $store.state.curPlayer.team_id.toString()">
+                    <v-expansion-panel class="elevation-10" v-if="$store.state.curPlayer.mod_start_date && $route.params.teamId === $store.state.curPlayer.team_id.toString()">
                         <v-expansion-panel-header>
                             Applications
                         </v-expansion-panel-header>
@@ -117,41 +118,69 @@
                 
                 <v-btn 
                     v-if="curPlayer.mod_start_date && curPlayer.team_id == $route.params.teamId"
-                    block style="font-size: 2rem;" 
+                    block style="font-size: 1.4rem;" 
                     @click="quitModding()"
-                    class="red darken-1 pa-6 py-8 my-4" dark>
-                    <v-icon size="2rem" left>mdi-cancel</v-icon>
+                    class="orange darken-1 py-6 px-5 mt-2 font-weight-bold" dark>
+                    <v-icon size="1.4rem" left>mdi-cancel</v-icon>
                     <v-spacer/>
-                        Stop Mod
+                    Stop Mod
                 </v-btn>
 
                 <v-btn 
-                    v-if="!curPlayer.team_id"
-                    block style="font-size: 2rem;" 
-                    @click="applyToTeam()"
-                    class="green pa-6 py-8 my-4">
-                    <v-icon size="2rem" left>mdi-account-plus</v-icon>
+                    v-if="!curPlayer.team_id && loggedIn"
+                    block style="font-size: 1.4rem;" 
+                    @click="dialog = true"
+                    class="green lighten-3 py-6 px-5 mt-2 font-weight-bold">
+                    <v-icon size="1.4rem" left>mdi-account-plus</v-icon>
                     <v-spacer/>
                     Apply NOW!
                 </v-btn>
                 
                 <v-btn 
-                    v-if="curPlayer.team_id == $route.params.teamId"
-                    @click="quitTeam()"
-                    block style="font-size: 2rem;" 
-                    class="red darken-1 pa-6 py-8 my-4" dark>
-                        <v-icon size="2rem" left>mdi-logout</v-icon>
-                        <v-spacer/>
-                        Quit Team
+                    v-if="!loggedIn"
+                    block style="font-size: 1.4rem;" 
+                    @click="$router.push('/login')"
+                    class="green lighten-3 py-6 px-5 mt-2 font-weight-bold">
+                    <v-icon size="1.4rem" left>mdi-account-plus</v-icon>
+                    <v-spacer/>
+                    Login to JOIN!
+                </v-btn>
+                
+                <v-btn 
+                v-if="curPlayer.team_id == $route.params.teamId"
+                @click="quitTeam()"
+                    block style="font-size: 1.4rem;" 
+                    class="orange darken-1 py-6 px-5 mt-2 font-weight-bold" dark>
+                    <v-icon size="1.4rem" left>mdi-logout</v-icon>
+                    <v-spacer/>
+                    Quit Team
                 </v-btn>
                 <!-- <v-btn block style="font-size: 2rem;" class="mx-auto">Login to Join NOW!</v-btn> -->
             </div>
         </div>
         
-        <!-- TODO: Make dialog look better -->
-        <v-dialog v-model="dialog" width="500">
+        <v-dialog v-model="dialog" width="max(500px, 50%)">
             <v-card>
+                 <v-toolbar
+                        class="text-h4 lighten-2"
+                        color="green"
+                    >
                 
+                    <v-spacer/>
+                    <p class="ma-4">Leave A Message?</p>
+                    <v-spacer/>
+                </v-toolbar>
+
+                <v-textarea 
+                    solo no-resize class="mx-4 mt-4"
+                    outlined v-model="message" 
+                    @keydown.ctrl.enter="applyToTeam"/>
+
+                <div width=100% class="d-flex justify-end">
+                    <v-btn outlined class="ma-5 green lighten-3" @click="applyToTeam">Apply</v-btn>
+                </div>
+
+                <v-divider></v-divider>
             </v-card>
         </v-dialog>
 
@@ -170,6 +199,7 @@ export default Vue.extend({
         panels: 0,
         average_puzzle: 0,
         average_rating: 0,
+        message: "",
 
         table_headers: [
             {
@@ -233,24 +263,58 @@ export default Vue.extend({
             this.$router.push("/player/" + player.username)
         },
 
-        quitModding() {
-
+        async quitModding() {
+            // Reload the information if it works
+            if (await this.$store.dispatch("quitTeamMod")) this.$router.go()
+            else { this.$notify("Failed") }
         },
 
-        promoteToMod() {
-
+        promoteToMod(item) {
         },
 
-        quitTeam() {
-
+        async quitTeam() {
+            // Reload the information if it works
+            if (await this.$store.dispatch("quitTeam")) this.$router.go()
+            else { this.$notify("Failed") }
+        },
+        
+        async applyToTeam() {
+            if (await this.$store.dispatch("makeApplication", {
+                team_id: this.$route.params.teamId,
+                message: this.message
+            })) {
+                // State the error
+                this.$notify({
+                    type: "Success",
+                    title: 'Application Successful',
+                    text: 'Please wait for a moderator to accept you'
+                });
+                this.dialog = false
+            }
+            else this.$notify("Application Failed")
         },
 
-        applyToTeam() {
-
-        },
-
-        approveApp(item, result) {
-            console.log(item, result)
+        async approveApp(item, result) {
+            // If approve, dispatch approval acceptance event to server
+            if (result) {
+                // Reload the information if it works
+                if (await this.$store.dispatch("approveApplication", {
+                    team_id: this.$route.params.teamId, 
+                    applicant: item.creator_name
+                })) this.$router.go()
+                else {this.$notify("Failed")}
+            }
+            
+            // Else reject, and delete application from server
+            else {
+                // Reload the information if it works
+                if (await this.$store.dispatch("rejectApplication", {
+                    id: item.id,
+                    team_id: item.team_id,
+                    applicant: item.creator_name
+                })) this.$router.go()
+                else { this.$notify("Failed") }
+            }
         }
     },
 
@@ -260,7 +324,8 @@ export default Vue.extend({
         },
 
         ...mapGetters({
-            curPlayer: 'getCurPlayer'
+            curPlayer: 'getCurPlayer',
+            loggedIn: 'loggedIn',
         })
     },
 

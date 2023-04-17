@@ -49,7 +49,17 @@
                         </v-list-item-content>
                     </v-list-item>
 
-                    <!-- Login Button -->
+                    <!-- Profile Button -->
+                    <v-list-item v-if="loggedIn" class="list" @click="$router.push('/player/' + curPlayer.username)"  color="primary">
+                        <v-list-item-icon>
+                            <v-icon>mdi-account-variant</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title class='text-button'> My Profile </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <!-- Login Button --> 
                     <v-list-item class="list_bot" @click="$router.push('/login')" color="primary" v-if="!loggedIn">
                         <v-list-item-icon>
                             <v-icon>mdi-login-variant</v-icon>
@@ -67,16 +77,6 @@
                         </v-list-item-icon>
                         <v-list-item-content color="primary">
                             <v-list-item-title class='text-button'> Logout </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <!-- Profile Button -->
-                    <v-list-item v-else class="list_bot" @click="$store.dispatch('logoutPlayer'); $router.push('/')" color="primary">
-                        <v-list-item-icon>
-                            <v-icon>mdi-account-variant</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content color="primary">
-                            <v-list-item-title class='text-button'> My Profile </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -160,7 +160,10 @@ export default Vue.extend({
     },
 
     computed: {
-        ...mapGetters(["loggedIn"]),
+        ...mapGetters({
+            loggedIn: "loggedIn",
+            curPlayer: "getCurPlayer"
+        }),
     },
 });
 </script>
@@ -218,5 +221,9 @@ export default Vue.extend({
 
 .list_bot:active {
     background: var(--v-secondary-base);
+}
+
+.v-card__text {
+    font-size: 1rem;
 }
 </style>  

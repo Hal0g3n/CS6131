@@ -98,30 +98,7 @@ export default {
     },
 
     created() {
-        fetch("https://lichess.org/api/player/top/100/classical")
-            .then((response) => response.json())
-            .then((data) =>
-                data["users"].forEach((element) => {
-                    this.top_chess.push({
-                        username: element["username"],
-                        rating: element["perfs"]["classical"]["rating"],
-                        delta: element["perfs"]["classical"]["progress"],
-                    });
-                })
-            );
-
-        // When API no have puzzle leaderboard :/
-        fetch("https://lichess.org/api/player/top/100/threeCheck")
-            .then((response) => response.json())
-            .then((data) =>
-                data["users"].forEach((element) => {
-                    this.top_puzzle.push({
-                        username: element["username"],
-                        rating: element["perfs"]["threeCheck"]["rating"],
-                        delta: element["perfs"]["threeCheck"]["progress"],
-                    });
-                })
-            );
+        
     },
 };
 </script>

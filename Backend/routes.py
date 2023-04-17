@@ -1,5 +1,5 @@
 from __main__ import app
-import player, team, game, applications
+import player, team, game, applications, tournament
 from flask import request
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
@@ -14,38 +14,32 @@ def register(): return player.register()
 @jwt_required(optional = True)
 def readUser(username): return player.read(username)
 
+@app.route("/player/leaderboard", methods=['GET'])
+def getLeaderboard(): return player.leaderboard()
+
+
 
 @app.route('/teams', methods=['GET'])
 @jwt_required(optional=True)
-def searchTeam(): return team.search(**request.args)
+def searchTeam():
+    return team.search(**request.args)
     
 @app.route('/teams/<team_id>', methods=['GET'])
 @jwt_required(optional=True)
 def getTeam(team_id): return team.getTeam(team_id)
 
 @app.route('/teams/create', methods=['POST'])
-def createTeam():
-    if 'team_name' not in request.form:
-        return "Malformed Request", 400
+@jwt_required()
+def createTeam(): return team.createTeam(request.form['team_name'])
 
-    # Create variables for easy access
-    team_name = request.form['team_name']
+@app.route('/teams/quitMod', methods=['POST'])
+@jwt_required()
+def quitTeamMod(): return team.quitMod()
 
-    # Check if team exists using MySQL
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM Teams WHERE team_name = %s', (team_name,))
-    team = cursor.fetchone()
+@app.route('/teams/quitTeam', methods=['POST'])
+@jwt_required()
+def quitTeam(): return team.quitTeam()
 
-    if team: return "Team already exists", 403
-
-    # Username check
-    if not re.match(r'^[A-Za-z0-9 ]+$', team_name): return "No SQLI", 403
-
-    # Team does not exists and the form data is valid, now insert new team into teams table
-    cursor.execute('INSERT INTO Teams(team_name) VALUES (%s)', (Teams))
-    mysql.connection.commit() #commit the insertion
-
-    return "Success", 200
 
 
 @app.route('/apply/team/<team_id>', methods=['GET', 'POST'])
@@ -54,16 +48,34 @@ def getApplyByTeam(team_id):
     if request.method == 'POST': return applications.create_application(team_id)
     if request.method == 'GET': return applications.get_applications(team_id = team_id)
 
-@app.route('/apply/user/', methods=['GET'])
+@app.route('/apply/user/<username>', methods=['GET'])
 @jwt_required()
-def getApplyByUser(): return applications.get_applications(username = request.args.user)
+def getApplyByUser(username): return applications.get_applications(username = username)
 
-
-@app.route("/auth", methods=['POST'])
+@app.route('/apply/approve', methods=['POST'])
 @jwt_required()
-def auth(): return "hello"
+def approveApply(): return applications.approve_application(int(request.form['team_id']), request.form['applicant'])
+
+@app.route('/apply/delete', methods=['POST'])
+@jwt_required()
+def deleteApply(): return applications.delete_application(int(request.form['id']), int(request.form['team_id']), request.form['applicant'])
+
 
 
 @app.route('/games/<id>', methods=['GET'])
 @jwt_required(optional=True)
 def getGame(id): return game.search(id = id)
+
+
+
+@app.route('/tournament/<id>', methods=['GET', 'POST'])
+@jwt_required(optional=True)
+def getTournament(id): 
+    if request.method == 'POST': return tournament.join(id)
+    if request.method == 'GET':  return tournament.get(id = id)
+
+@app.route('/tournament', methods=['GET'])
+def searchTournaments(): return tournament.search()
+
+@app.route('/tournament/create', methods=['POST'])
+def createTournament(): return tournament.create()

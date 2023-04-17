@@ -24,6 +24,13 @@ export default new Vuetify({
                 secondary: colors.orange.base, // #FFCDD2
                 accent: colors.indigo.base, // #3F51B5
                 // anchor: colors.blueGrey.base
+                green: {
+                    base: colors.green.base, // #E53935
+                    lighten1: colors.green.darken1,
+                    lighten2: colors.green.darken2,
+                    lighten3: colors.green.darken3,
+                    lighten4: colors.green.darken4
+                },
             },
         },
         options: { customProperties: true }

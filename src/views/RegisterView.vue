@@ -3,7 +3,7 @@
         <v-row align="center" justify="center">
             <v-col xs="12" sm="10" md="8">
                 
-                <v-card elevation=12 shaped class='pb-4'>
+                <v-card elevation=12 class='pb-4 rounded-xl'>
                     <v-toolbar dark color="primary" class='my-4'>
                         <!-- LOGO -->
                         <v-spacer/>

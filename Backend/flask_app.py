@@ -50,7 +50,6 @@ except: pass
 # Load the blacklist
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload):
-    print(blacklist)
     jti = jwt_payload['jti']
     return jti in blacklist
 

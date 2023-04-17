@@ -46,14 +46,44 @@ def get_applications(team_id = None, username = None):
         cursor.execute("SELECT * FROM Applications WHERE team_id = %s", (team_id, ))
         return jsonify(cursor.fetchall())
 
-
-    # Collecting personal application data
-    
+    # Collecting personal application data (with team name)
+    cursor.execute("SELECT team_name, Applications.* FROM Applications NATURAL JOIN Teams WHERE creator_name = %s", (get_jwt_identity(), ))
+    res = cursor.fetchall()
+    print(res)
+    return jsonify(res)
 
 
 def delete_application(id, team_id = None, username = None):
-    pass
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    if not username:
+        # Delete user's own applications
+        cursor.execute("DELETE FROM Applications where creator_name = %s AND team_id = %s AND id = %s", (get_jwt_identity(), team_id, id))
+        mysql.connection.commit()
+
+    else: # Delete team application
+        # Make sure player is moderator of team
+        cursor.execute("SELECT * FROM Players WHERE username = %s", (get_jwt_identity(),))
+        player = cursor.fetchone()
+
+        if player['team_id'] != team_id or not player['mod_start_date']: return "Not moderator of team"
+
+        # Delete because you got rejected :/
+        cursor.execute("DELETE FROM Applications where creator_name = %s AND team_id = %s AND id = %s", (username, team_id, id))
+        mysql.connection.commit()
+
+    return "Success!"
 
 
 def approve_application(team_id, applicant):
-    pass
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # Yay you got approved
+    cursor.execute("UPDATE Applications SET approver_name = %s WHERE team_id = %s AND creator_name = %s", (get_jwt_identity(), team_id, applicant))
+    mysql.connection.commit()
+
+    # Delete all applications because applicant is accepted
+    cursor.execute("DELETE FROM Applications where creator_name = %s", (applicant,))
+    mysql.connection.commit()
+
+    return "Success!"

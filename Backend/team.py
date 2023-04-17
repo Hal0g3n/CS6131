@@ -24,7 +24,7 @@ def search(name = None, team_id = None):
         query += " AND team_id = %s"
         params.append(int(team_id))
 
-    cursor.execute(query, tuple(params))
+    cursor.execute(query + " ORDER BY member_count DESC", tuple(params))
     
     # Return all teams
     return jsonify(list(map(
@@ -70,3 +70,52 @@ def getTeam(id):
     team['icon'] = "data:image/png;base64," + base64.b64encode(team['icon']).decode() if team['icon'] else None
 
     return jsonify(team)
+
+
+def createTeam(team_name):
+    # Check if team exists using MySQL
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM Teams WHERE team_name = %s', (team_name,))
+    team = cursor.fetchone()
+
+    if team: return "Team already exists", 403
+
+    # Username check
+    if not re.match(r'^[A-Za-z0-9 ]+$', team_name): return "Invalid Team Name", 403
+
+    # Team does not exists and the form data is valid, now insert new team into teams table
+    cursor.execute('INSERT INTO Teams(team_name, creation_date) VALUES (%s, NOW())', (team_name,))
+    mysql.connection.commit() #commit the insertion
+
+    # Get the team object
+    cursor.execute('SELECT * FROM Teams WHERE team_name = %s', (team_name,))
+    team = cursor.fetchone()
+
+    cursor.execute('''
+    UPDATE Players SET team_id = %s, join_date = NOW(), mod_start_date = NOW()
+    WHERE username = %s
+    ''', (team['team_id'], get_jwt_identity(),))
+    mysql.connection.commit() #commit the update
+
+    team['icon'] = "data:image/png;base64," + base64.b64encode(team['icon']).decode() if team['icon'] else None
+    return jsonify(team)
+
+def quitMod():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+    UPDATE Players SET mod_start_date = NULL
+    WHERE username = %s
+    ''', (get_jwt_identity(),))
+    mysql.connection.commit() #commit the update
+    
+    return "Success!"
+
+def quitTeam():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+    UPDATE Players SET mod_start_date = NULL, team_id = NULL, join_date = NULL
+    WHERE username = %s
+    ''', (get_jwt_identity(),))
+    mysql.connection.commit() #commit the update
+    
+    return "Success!"

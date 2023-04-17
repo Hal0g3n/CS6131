@@ -2,10 +2,11 @@
     <v-hover v-slot="{hover}">
         <v-card 
         @click = "$emit('click', team)"
-        outlined
-        shaped
+        outlined tile
         :class="{ 'on-hover': hover && hoverAnim }"
+        class="rounded-xl"
         height="100%"
+        width ="100%"
         :elevation="hover && hoverAnim ? 24 : 6">
             <div class="d-flex flex-no-wrap justify-right align-center" style="height: 100%; width: 100%">
                 <v-avatar class="mx-3 my-auto" size="72px" tile>
