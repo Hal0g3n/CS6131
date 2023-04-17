@@ -38,7 +38,7 @@
             <!-- Left Side -->
             <div style="width: 65%" class="ma-2">
                 <v-data-table :headers="table_headers" :items="team.players" class="elevation-5" hide-default-header :items-per-page="-1"
-                    no-data-text="Loading Members" hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
+                    no-data-text="No Members" hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
 
                     <template v-slot:item.ranking="{ index }">
                         {{ index+1 }}
@@ -67,7 +67,7 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <v-data-table :headers="mod_table_headers" :items="moderators" class="elevation-10" hide-default-header :items-per-page="-1"
-                                no-data-text="Loading Moderators" hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
+                                no-data-text="No Moderators" hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
 
                                 <template v-slot:item.avatar="{ item }">
                                     <v-img v-if="item.avatar" :src="item.avatar"/>
@@ -339,8 +339,8 @@ export default Vue.extend({
             this.average_rating += player.rating
         }
 
-        this.average_puzzle = Math.round(this.average_puzzle / this.team.players.length);
-        this.average_rating = Math.round(this.average_rating / this.team.players.length);
+        this.average_puzzle = this.team.players.length == 0 ? 0 : Math.round(this.average_puzzle / this.team.players.length);
+        this.average_rating = this.team.players.length == 0 ? 0 : Math.round(this.average_rating / this.team.players.length);
         
         // Check if player is moderator
         if (!this.$store.state.curPlayer.mod_start_date || this.$route.params.teamId !== this.$store.state.curPlayer.team_id.toString()) return;

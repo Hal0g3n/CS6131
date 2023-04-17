@@ -2,7 +2,8 @@
 node_modules
 /dist
 /backend/__pycache__
-/backend/lichess_db_puzzle.csv
+.ipynb_checkpoints
+lichess_db_puzzle.csv
 
 
 # local env files

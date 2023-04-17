@@ -52,7 +52,7 @@
                     <!-- Profile Button -->
                     <v-list-item v-if="loggedIn" class="list" @click="$router.push('/player/' + curPlayer.username)"  color="primary">
                         <v-list-item-icon>
-                            <v-icon>mdi-account-variant</v-icon>
+                            <v-icon>mdi-account-box-outline</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title class='text-button'> My Profile </v-list-item-title>
@@ -143,7 +143,7 @@ export default Vue.extend({
             { name: "Teams", icon: "mdi-account-multiple", path: "/teams", showOnLogin: true },
             { name: "Rankings", icon: "mdi-chart-box-outline", path: "/ranking", showOnLogin: true },
             { name: "Tournaments", icon: "mdi-trophy", path: "/tournament", showOnLogin: true },
-            { name: "Feedback", icon: "mdi-comment-quote", path: "/feedback", showOnLogin: true },
+            // { name: "Feedback", icon: "mdi-comment-quote", path: "/feedback", showOnLogin: true },
             // TODO: Fix up puzzles in the future
         ],
     }),

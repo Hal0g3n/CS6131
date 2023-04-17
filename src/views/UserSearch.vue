@@ -5,17 +5,6 @@
         <div class="d-flex">
             <!-- left side search -->
             <div style="width: 69%" class="ma-2">
-                <v-text-field dense solo label="Search Teams" append-icon="mdi-magnify" single-line outlined hide-details
-                    clearable height="min(100px, 5vh)" class="mx-auto grey lighten-3 rounded-pill"
-                    style=" margin-top: min(50px, max(1.5%, 1.5vh));" v-model="search" @click:clear="search = ''" />
-
-                <v-container class="my-4 mx-auto rounded-xl">
-                    <v-row>
-                        <v-col v-for="team in filteredTeams" :key="team.id" cols="12" xl="6" class="ma-4">
-                            <TeamCard :team="team" @click="selectTeam(team)" />
-                        </v-col>
-                    </v-row>
-                </v-container>
             </div>
 
             <!-- right side user team management -->
@@ -23,7 +12,7 @@
                 <v-expansion-panels accordion v-model="panels">
                     <!-- Only for moderators -->
                     <v-expansion-panel class="primary lighten-3" v-if="!curPlayer.team_id">
-                        <v-expansion-panel-header class="font-weight-bold" style="font-size: 1.3rem;"">
+                        <v-expansion-panel-header class="font-weight-bold" style="font-size: 1.3rem;">
                                 Applications
                             </v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -79,19 +68,19 @@ export default {
     data() {
         return {
             search: '',
-            teams: []
+            players: []
         }
     },
 
     methods: {
-        selectTeam(team) {
-            this.$router.push("/teams/" + team.team_id)
+        selectTeam(player) {
+            this.$router.push("/player/" + player.username)
         }
     },
 
     computed: {
-        filteredTeams() {
-            return this.teams.filter(team => {
+        filteredPlayers() {
+            return this.players.filter(team => {
                 return team.team_name.toLowerCase().includes(this.search.toLowerCase())
             })
         },
