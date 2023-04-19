@@ -4,13 +4,14 @@
         @click = "$emit('click', team)"
         outlined tile
         :class="{ 'on-hover': hover && hoverAnim }"
-        class="rounded-xl"
+        class="rounded-xl hover-card"
         height="100%"
         width ="100%"
         :elevation="hover && hoverAnim ? 24 : 6">
             <div class="d-flex flex-no-wrap justify-right align-center" style="height: 100%; width: 100%">
                 <v-avatar class="mx-3 my-auto" size="72px" tile>
-                    <v-img :src="team.icon"></v-img>
+                    <v-img size=72px v-if="team.icon" :src="team.icon"/>
+                    <v-icon size=72px v-else>mdi-forum</v-icon>
                 </v-avatar>
             
                 <div align="left">
@@ -50,12 +51,12 @@ export default Vue.extend({
 
 
 <style scoped>
-.v-card {
+.hover-card {
   transition: opacity .2s ease-in-out;
   cursor: pointer;
 }
 
-.v-card:not(.on-hover) {
+.hover-card:not(.on-hover) {
   opacity: 0.8;
 }
 </style>

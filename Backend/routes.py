@@ -10,6 +10,13 @@ def login(): return player.login()
 @app.route('/player/new', methods=['POST'])
 def register(): return player.register()
 
+@app.route('/player/update', methods=['POST'])
+@jwt_required()
+def update(): return player.update(about = request.form['about'])
+
+@app.route('/player/search', methods=['GET'])
+def searchPlayer(): return player.search(**request.args)
+
 @app.route("/player/<username>", methods=["GET"])
 @jwt_required(optional = True)
 def readUser(username): return player.read(username)
@@ -36,6 +43,14 @@ def createTeam(): return team.createTeam(request.form['team_name'])
 @jwt_required()
 def quitTeamMod(): return team.quitMod()
 
+@app.route('/teams/promoMod', methods=['POST'])
+@jwt_required()
+def promoMod(): return team.promoMod(username = request.form['username'], team_id = request.form['team_id'])
+
+@app.route('/teams/kick', methods=['POST'])
+@jwt_required()
+def kick(): return team.kick(username = request.form['username'], team_id = request.form['team_id'])
+
 @app.route('/teams/quitTeam', methods=['POST'])
 @jwt_required()
 def quitTeam(): return team.quitTeam()
@@ -58,13 +73,17 @@ def approveApply(): return applications.approve_application(int(request.form['te
 
 @app.route('/apply/delete', methods=['POST'])
 @jwt_required()
-def deleteApply(): return applications.delete_application(int(request.form['id']), int(request.form['team_id']), request.form['applicant'])
+def deleteApply(): return applications.delete_application(int(request.form['id']), int(request.form['team_id']), request.form['applicant'] if 'applicant' in request.form else None)
 
 
 
 @app.route('/games/<id>', methods=['GET'])
 @jwt_required(optional=True)
-def getGame(id): return game.search(id = id)
+def getGame(id): return game.getGame(id = id)
+
+@app.route('/games/player/<username>', methods=['GET'])
+@jwt_required(optional=True)
+def searchGames(username): return game.search(username = username)
 
 
 

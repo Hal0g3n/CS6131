@@ -6,9 +6,11 @@
 
             <v-container no-gutters height="100%" width="100%">
                 <v-row :justify="$vuetify.breakpoint.lgAndDown ? 'center' : 'start'">
-                    <v-col class="d-flex flex-nowrap align-center" justify="$vuetify.breakpoint.lgAndDown ? 'center' : 'start'" sm="12" xl="6">
+                    <v-col class="d-flex flex-nowrap align-center"
+                        justify="$vuetify.breakpoint.lgAndDown ? 'center' : 'start'" sm="12" xl="6">
                         <v-avatar class="mx-3 my-auto" size="100px" tile>
-                            <v-img :src="team.icon"></v-img>
+                            <v-img size=100px v-if="team.icon" :src="team.icon" />
+                            <v-icon size=100px v-else>mdi-forum</v-icon>
                         </v-avatar>
 
                         <div align="left">
@@ -37,27 +39,43 @@
         <div class="d-flex">
             <!-- Left Side -->
             <div style="width: 65%" class="ma-2">
-                <v-data-table :headers="table_headers" :items="team.players" class="elevation-5" hide-default-header :items-per-page="-1"
-                    no-data-text="No Members" hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
+                <v-data-table disable-pagination :headers="table_headers" :items="team.players" class="elevation-5"
+                    hide-default-header :items-per-page="-1" no-data-text="No Members" hide-default-footer sort-by="rating"
+                    :sort-desc="true">
 
                     <template v-slot:item.ranking="{ index }">
-                        {{ index+1 }}
+                        {{ index + 1 }}
                     </template>
 
                     <template v-slot:item.avatar="{ item }">
-                        <v-img v-if="item.avatar" :src="item.avatar"/>
+                        <v-img v-if="item.avatar" :src="item.avatar" />
                         <v-icon v-else>mdi-account-circle</v-icon>
                     </template>
-                    
+
                     <template v-slot:item.username="{ item }">
                         {{ item.username }}
                     </template>
+
+                    <template v-slot:item.actions="{ item }"
+                        v-if="curPlayer.mod_start_date && curPlayer.team_id == $route.params.teamId">
+                        <v-menu top :close-on-content-click="closeOnContentClick">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn medium icon color="grey" v-bind="attrs" v-on="on">
+                                    <v-icon>mdi-dots-horizontal</v-icon>
+                                </v-btn>
+                            </template>
+
+                            <v-btn block v-if="!item.is_moderator" @click="makeMod(item)">Make Mod</v-btn>
+                            <v-btn block v-if="!item.is_moderator" @click="kick(item)">Kick Member</v-btn>
+                            <v-btn readonly block v-else>Member is Mod</v-btn>
+                        </v-menu>
+                    </template>
                 </v-data-table>
             </div>
-            
+
             <!-- Right Side -->
             <div style="width: 35%" class="mx-2">
-                
+
                 <v-expansion-panels class="mt-2" accordion v-model="panels">
 
                     <!-- Show Moderators -->
@@ -66,14 +84,15 @@
                             Moderators
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <v-data-table :headers="mod_table_headers" :items="moderators" class="elevation-10" hide-default-header :items-per-page="-1"
-                                no-data-text="No Moderators" hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
+                            <v-data-table disable-pagination :headers="mod_table_headers" :items="moderators"
+                                class="elevation-10" hide-default-header :items-per-page="-1" no-data-text="No Moderators"
+                                hide-default-footer @click:row="toPlayer" sort-by="rating" :sort-desc="true">
 
                                 <template v-slot:item.avatar="{ item }">
-                                    <v-img v-if="item.avatar" :src="item.avatar"/>
+                                    <v-img v-if="item.avatar" :src="item.avatar" />
                                     <v-icon v-else>mdi-account-circle</v-icon>
                                 </template>
-                            
+
                                 <template v-slot:item.username="{ item }">
                                     {{ item.username }}
                                 </template>
@@ -82,99 +101,84 @@
                     </v-expansion-panel>
 
                     <!-- Only for moderators -->
-                    <v-expansion-panel class="elevation-10" v-if="$store.state.curPlayer.mod_start_date && $route.params.teamId === $store.state.curPlayer.team_id.toString()">
+                    <v-expansion-panel class="elevation-10"
+                        v-if="$store.state.curPlayer.mod_start_date && $route.params.teamId === $store.state.curPlayer.team_id.toString()">
                         <v-expansion-panel-header>
                             Applications
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <v-data-table :headers="app_table_headers" :items="applications" class="elevation-10" hide-default-header :items-per-page="-1"
-                                no-data-text="No Applications Yet..." hide-default-footer>
-                        
+                            <v-data-table disable-pagination :headers="app_table_headers" :items="applications"
+                                class="elevation-10" hide-default-header :items-per-page="-1"
+                                no-data-text="No Applications Yet..." hide-default-footer single-expand
+                                :expanded.sync="expanded" show-expand>
+
                                 <template v-slot:item.username="{ item }">
                                     {{ item.creator_name }}
                                 </template>
-                                
+
                                 <!-- Accept/Reject Button -->
                                 <template v-slot:item.actions="{ item }">
-                                    <v-btn
-                                        medium icon
-                                        color="green"
-                                        @click="approveApp(item, true)">
+                                    <v-btn medium icon color="green" @click="approveApp(item, true)">
                                         <v-icon>mdi-check</v-icon>
                                     </v-btn>
 
-                                    <v-btn
-                                        medium icon
-                                        color="red"
-                                        @click="approveApp(item, false)">
+                                    <v-btn medium icon color="red" @click="approveApp(item, false)">
                                         <v-icon>mdi-close</v-icon>
                                     </v-btn>
                                 </template>
 
+                                <template v-slot:expanded-item="{ headers, item }">
+                                    <td :colspan="headers.length">
+                                        {{ item.message }}
+                                    </td>
+                                </template>
                             </v-data-table>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                
-                <v-btn 
-                    v-if="curPlayer.mod_start_date && curPlayer.team_id == $route.params.teamId"
-                    block style="font-size: 1.4rem;" 
-                    @click="quitModding()"
+
+                <v-btn v-if="curPlayer.mod_start_date && curPlayer.team_id == $route.params.teamId" block
+                    style="font-size: 1.4rem;" @click="quitModding()"
                     class="orange darken-1 py-6 px-5 mt-2 font-weight-bold" dark>
                     <v-icon size="1.4rem" left>mdi-cancel</v-icon>
-                    <v-spacer/>
+                    <v-spacer />
                     Stop Mod
                 </v-btn>
 
-                <v-btn 
-                    v-if="!curPlayer.team_id && loggedIn"
-                    block style="font-size: 1.4rem;" 
-                    @click="dialog = true"
+                <v-btn v-if="!curPlayer.team_id && loggedIn" block style="font-size: 1.4rem;" @click="dialog = true"
                     class="green lighten-3 py-6 px-5 mt-2 font-weight-bold">
                     <v-icon size="1.4rem" left>mdi-account-plus</v-icon>
-                    <v-spacer/>
+                    <v-spacer />
                     Apply NOW!
                 </v-btn>
-                
-                <v-btn 
-                    v-if="!loggedIn"
-                    block style="font-size: 1.4rem;" 
-                    @click="$router.push('/login')"
+
+                <v-btn v-if="!loggedIn" block style="font-size: 1.4rem;" @click="$router.push('/login')"
                     class="green lighten-3 py-6 px-5 mt-2 font-weight-bold">
                     <v-icon size="1.4rem" left>mdi-account-plus</v-icon>
-                    <v-spacer/>
+                    <v-spacer />
                     Login to JOIN!
                 </v-btn>
-                
-                <v-btn 
-                v-if="curPlayer.team_id == $route.params.teamId"
-                @click="quitTeam()"
-                    block style="font-size: 1.4rem;" 
+
+                <v-btn v-if="curPlayer.team_id == $route.params.teamId" @click="quitTeam()" block style="font-size: 1.4rem;"
                     class="orange darken-1 py-6 px-5 mt-2 font-weight-bold" dark>
                     <v-icon size="1.4rem" left>mdi-logout</v-icon>
-                    <v-spacer/>
+                    <v-spacer />
                     Quit Team
                 </v-btn>
                 <!-- <v-btn block style="font-size: 2rem;" class="mx-auto">Login to Join NOW!</v-btn> -->
             </div>
         </div>
-        
+
         <v-dialog v-model="dialog" width="max(500px, 50%)">
             <v-card>
-                 <v-toolbar
-                        class="text-h4 lighten-2"
-                        color="green"
-                    >
-                
-                    <v-spacer/>
+                <v-toolbar class="text-h4 lighten-2" color="green">
+
+                    <v-spacer />
                     <p class="ma-4">Leave A Message?</p>
-                    <v-spacer/>
+                    <v-spacer />
                 </v-toolbar>
 
-                <v-textarea 
-                    solo no-resize class="mx-4 mt-4"
-                    outlined v-model="message" 
-                    @keydown.ctrl.enter="applyToTeam"/>
+                <v-textarea solo no-resize class="mx-4 mt-4" outlined v-model="message" @keydown.ctrl.enter="applyToTeam" />
 
                 <div width=100% class="d-flex justify-end">
                     <v-btn outlined class="ma-5 green lighten-3" @click="applyToTeam">Apply</v-btn>
@@ -225,6 +229,12 @@ export default Vue.extend({
                 align: 'end',
                 value: 'rating',
             },
+            {
+                text: 'actions',
+                sortable: false,
+                align: 'end',
+                value: 'actions',
+            },
         ],
 
         mod_table_headers: [
@@ -269,7 +279,20 @@ export default Vue.extend({
             else { this.$notify("Failed") }
         },
 
-        promoteToMod(item) {
+        async makeMod(item) {
+            if (await this.$store.dispatch("makeMod", {
+                username: item.username,
+                team_id: this.$route.params.teamId,
+            })) this.$router.go()
+            else { this.$notify("Failed") }
+        },
+        
+        async kick(item) {
+            if (await this.$store.dispatch("kick", {
+                username: item.username,
+                team_id: this.$route.params.teamId,
+            })) this.$router.go()
+            else { this.$notify("Failed") }
         },
 
         async quitTeam() {
@@ -277,7 +300,7 @@ export default Vue.extend({
             if (await this.$store.dispatch("quitTeam")) this.$router.go()
             else { this.$notify("Failed") }
         },
-        
+
         async applyToTeam() {
             if (await this.$store.dispatch("makeApplication", {
                 team_id: this.$route.params.teamId,
@@ -299,12 +322,12 @@ export default Vue.extend({
             if (result) {
                 // Reload the information if it works
                 if (await this.$store.dispatch("approveApplication", {
-                    team_id: this.$route.params.teamId, 
+                    team_id: this.$route.params.teamId,
                     applicant: item.creator_name
                 })) this.$router.go()
-                else {this.$notify("Failed")}
+                else { this.$notify("Failed") }
             }
-            
+
             // Else reject, and delete application from server
             else {
                 // Reload the information if it works
@@ -341,10 +364,10 @@ export default Vue.extend({
 
         this.average_puzzle = this.team.players.length == 0 ? 0 : Math.round(this.average_puzzle / this.team.players.length);
         this.average_rating = this.team.players.length == 0 ? 0 : Math.round(this.average_rating / this.team.players.length);
-        
+
         // Check if player is moderator
         if (!this.$store.state.curPlayer.mod_start_date || this.$route.params.teamId !== this.$store.state.curPlayer.team_id.toString()) return;
-        
+
         // Get applications
         this.applications = await this.$store.getters.getApplications(this.$route.params.teamId)
     }

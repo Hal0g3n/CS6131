@@ -1,18 +1,16 @@
 <template>
     <div class="profile flex-column" style="width: 100%">
         <!-- Profile Card -->
-        <v-card elevation="12" class="pb-4" style="margin: 3vh 25vw" color="primary lighten-2" height="25vh">
-            <div class="d-flex flex-no-wrap justify-space-between align-center" style="height: 100%; width: 100%">
-                <div>
-                    <v-card-title style="text-align: left" class="text-h3 font-weight-medium mb-auto"
-                        v-text="player.username"></v-card-title>
-                    <v-card-title style="text-align: left" class="text-h5 font-weight-bold mt-auto"
-                        v-text="player.rating"></v-card-title>
-                </div>
-
-                <v-avatar class="ma-3" size="15vh" tile>
-                    <v-img :src="player.avatar" style="border: 2px solid var(--v-secondary-lighten1);"></v-img>
+        <v-card elevation="12" class="pb-4" style="margin: 3vh 25vw;" height="15vh">
+            <div class="d-flex flex-no-wrap justify-right align-center" style="height: 100%; width: 100%">
+                <v-avatar class="mx-3 my-auto" size="72px" tile>
+                    <v-img size=72px v-if="player.avatar" :src="player.avatar"/>
+                    <v-icon size=72px v-else>mdi-account-circle</v-icon>
                 </v-avatar>
+    
+                <div align="left">
+                    <v-card-title class="text-h3 font-weight-medium">{{ player.username }}</v-card-title>
+                </div>
             </div>
         </v-card>
 
@@ -29,12 +27,33 @@
                 </v-tab>
 
                 <v-tab-item>
-                    <v-card height="60vh" class="d-flex align-center">
+                    <v-card height="60vh" class="d-flex align-center justify-start">
                         <v-card elevation="10" class="ma-10" width="calc(40% - 40px)" height="35vh">
                             <v-card-title>About Me!</v-card-title>
-                            <v-card-text>{{ player.about_me }}</v-card-text>
+                            <v-card-text v-if="display">{{ player.about_me }}</v-card-text>
+                            <v-textarea v-else
+                                solo no-resize class="mx-4 mt-4"
+                                outlined v-model="player.about_me" 
+                                @keydown.ctrl.enter="swapDisplay"/>
+                    
+                            <div class="d-flex justify-end mx-5">
+                                <v-btn v-if="player.username == curPlayer.username"
+                                    large icon
+                                    color="grey"
+                                    @click="swapDisplay">
+                                    <v-icon v-if="display">mdi-pen</v-icon>
+                                    <v-icon v-else color="green">mdi-check</v-icon>
+                                </v-btn>
+                            </div>
                         </v-card>
 
+                        
+                        <div elevation="10" class="ma-10" width="calc(40% - 40px)" height="35vh">
+                            <v-card-title>Team</v-card-title>
+                            <v-card-text v-if="!player.team_id">None at the moment...</v-card-text>
+                            <TeamCard v-else :hoverAnim="false" :team="team" @click="$router.push('/teams/' + player.team_id)"/>
+                        </div>
+                        
                     </v-card>
                 </v-tab-item>
 
@@ -96,7 +115,7 @@
 
 
 
-                <v-tab>
+                <v-tab v-if="false">
                     <v-icon left> mdi-puzzle </v-icon>
                     Puzzles
                     <v-spacer />
@@ -157,6 +176,8 @@
 import Vue from "vue";
 import { mapGetters } from "vuex";
 import VueApexCharts from "vue-apexcharts";
+import TeamCard from '../components/TeamCard.vue'
+import PlayerCard from '../components/PlayerCard.vue'
 
 export default Vue.extend({
     data: () => ({
@@ -200,8 +221,10 @@ export default Vue.extend({
         },
 
         player: {},
+        team: {},
         classical_data: [],
         puzzle_data: [],
+        display: true,
 
         classicalSelection: "all",
         puzzleSelection: "all",
@@ -226,79 +249,22 @@ export default Vue.extend({
                 value: 'side',
             },
             { text: "Result", value: "result" },
-            { text: 'Moves', value: 'moves' },
             { text: 'Date', value: 'date' }
         ],
         games: [
             {
-                opponent: "AI",
-                result: 1,
-                moves: 70,
-                side: "white",
-                date: new Date(2023, 0, 12)
+                "date": "Sat, 11 Feb 2023 16:09:23 GMT",
+                "is_public": true,
+                "opponent": "ethantan2509",
+                "result": -1,
+                "side": "white"
             },
             {
-                opponent: "AI",
-                result: -1,
-                moves: 69,
-                side: "white",
-                date: new Date(2023, 1, 11)
-            },
-            {
-                opponent: "AI",
-                result: 0,
-                moves: 50,
-                side: "white",
-                date: new Date(2023, 2, 11)
-            },
-            {
-                opponent: "AI",
-                result: 1,
-                moves: 70,
-                side: "black",
-                date: new Date(2023, 1, 10)
-            },
-            {
-                opponent: "AI",
-                result: 0,
-                moves: 69,
-                side: "black",
-                date: new Date(2023, 1, 10)
-            },
-            {
-                opponent: "AI",
-                result: -1,
-                moves: 50,
-                side: "black",
-                date: new Date(2023, 1, 10)
-            },
-            {
-                opponent: "AI",
-                result: 1,
-                moves: 9,
-                side: "white",
-                date: new Date(2023, 1, 9)
-            },
-            {
-                opponent: "AI",
-                result: -1,
-                moves: 6,
-                side: "white",
-                date: new Date(2023, 1, 8)
-            },
-            {
-                opponent: "AI",
-                result: 1,
-                moves: 9,
-                side: "black",
-                date: new Date(2023, 1, 7)
-            },
-            {
-                opponent: "AI",
-                result: -1,
-                moves: 6,
-                side: "black",
-                date: new Date(2023, 1, 7)
+                "date": "Sat, 11 Feb 2023 16:02:11 GMT",
+                "is_public": true,
+                "opponent": "ethantan2509",
+                "result": 1,
+                "side": "black"
             }
         ]
     }),
@@ -343,8 +309,25 @@ export default Vue.extend({
                 right // Today
             );
         },
+
+        async swapDisplay() {
+            if (this.display) {this.display = false; return;}
+
+            if (await this.$store.dispatch("updateProfile", {
+                username: this.$route.params.username,
+                about: this.player.about_me
+            })) this.display = true;
+            else { this.$notify("Failed") }
+
+        }
     },
-    components: { LineChart: VueApexCharts },
+    components: { LineChart: VueApexCharts, TeamCard, PlayerCard},
+
+    computed: {
+        ...mapGetters({
+            curPlayer: 'getCurPlayer',
+        })
+    },
 
     beforeCreate() {
 
@@ -365,6 +348,15 @@ export default Vue.extend({
             data: this.player.puzzle_history.map(point => [new Date(point.datetime), point.rating]),
             name: "Puzzles"
         }];
+
+        // Get the games
+        this.games = await this.$store.getters.getGames(this.$route.params.username);
+        this.games.map(game => game['date'] = new Date(game['date']))
+        
+        if (!this.player.team_id) return;
+
+        this.team = await this.$store.getters.getTeam(this.player.team_id)
+        console.log(this.team)
     }
 });
 </script>

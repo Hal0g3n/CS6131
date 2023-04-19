@@ -110,6 +110,31 @@ def quitMod():
     
     return "Success!"
 
+def promoMod(username, team_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # Make sure initiator is moderator of team
+    cursor.execute("SELECT * FROM Players WHERE username = %s", (get_jwt_identity(),))
+    player = cursor.fetchone()
+    print(1)
+    if str(player['team_id']) != team_id or not player['mod_start_date']: return "Not moderator of team", 403
+    print(2)
+
+    # Make sure player is part of team
+    cursor.execute("SELECT * FROM Players WHERE username = %s", (username,))
+    player = cursor.fetchone()
+    if str(player['team_id']) != team_id: return "User cannot be moderator", 403
+
+    # Now update promote the player
+    cursor.execute('''
+    UPDATE Players SET mod_start_date = NOW()
+    WHERE username = %s
+    ''', (username,))
+    mysql.connection.commit() #commit the update
+
+    return "Success!"
+
+
 def quitTeam():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('''
@@ -118,4 +143,26 @@ def quitTeam():
     ''', (get_jwt_identity(),))
     mysql.connection.commit() #commit the update
     
+    return "Success!"
+
+def kick(username, team_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # Make sure initiator is moderator of team
+    cursor.execute("SELECT * FROM Players WHERE username = %s", (get_jwt_identity(),))
+    player = cursor.fetchone()
+    
+    if str(player['team_id']) != team_id or not player['mod_start_date']: return "Not moderator of team", 403
+
+    # Make sure player is part of team
+    cursor.execute("SELECT * FROM Players WHERE username = %s", (username,))
+    player = cursor.fetchone()
+    if str(player['team_id']) != team_id: return "User not in team", 403
+
+    # Kick the poor player
+    cursor.execute('''
+    UPDATE Players SET mod_start_date = NULL, team_id = NULL, join_date = NULL
+    WHERE username = %s
+    ''', (username,))
+    mysql.connection.commit() #commit the update
     return "Success!"

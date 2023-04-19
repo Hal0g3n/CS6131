@@ -222,8 +222,4 @@ export default Vue.extend({
 .list_bot:active {
     background: var(--v-secondary-base);
 }
-
-.v-card__text {
-    font-size: 1rem;
-}
 </style>  

@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, get_jwt
+from flask_jwt_extended import create_access_token, get_jwt_identity
 from flask import jsonify, request
 from datetime import datetime, timedelta
 
@@ -85,7 +85,7 @@ def leaderboard():
     # Query all players and their respective ratings
     cursor.execute("""
     SELECT *
-    FROM (SELECT username, avatar, (
+    FROM (SELECT Players.* , (
         SELECT rating 
         FROM Rating_History hist 
         WHERE hist.username = Players.username 
@@ -98,8 +98,53 @@ def leaderboard():
 
     return jsonify(cursor.fetchall())
 
-def search(): pass
+def search(username = None, team_id = None): 
+    """
+    Get all players with search params using MySQL
+    """
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-def update(): pass
+    query = """
+    SELECT *
+    FROM (SELECT Players.* , (
+        SELECT rating 
+        FROM Rating_History hist 
+        WHERE hist.username = Players.username 
+        ORDER BY datetime
+        DESC LIMIT 1
+    ) rating FROM Players) rating_table WHERE true"""
+
+    params = []
+
+    if username: 
+        query += " AND username LIKE %%s%"
+        params.append(username)
+
+    if team_id: 
+        query += " AND team_id = %s"
+        params.append(int(team_id))
+
+    # Place a limit on the limit
+    cursor.execute(query + " ORDER BY rating DESC LIMIT 50", tuple(params))
+    
+    # Return all players
+    return jsonify(list(map(
+        lambda player: {**player, 'avatar': "data:image/png;base64," + base64.b64encode(player['avatar']).decode() if player['avatar'] else None},
+        cursor.fetchall()
+    )))
+
+def update(about): 
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cursor.execute('''
+    UPDATE Players SET about_me = %s
+    WHERE username = %s
+    ''', (about, get_jwt_identity(),))
+    mysql.connection.commit() #commit the update
+
+    cursor.execute('''SELECT * FROM Players WHERE username = %s''', (get_jwt_identity(),))
+    print(cursor.fetchone(), about)
+
+    return "Success!"
 
 def delete(): pass

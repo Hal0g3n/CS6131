@@ -40,7 +40,7 @@ def get_applications(team_id = None, username = None):
         # Make sure player is moderator of team
         cursor.execute("SELECT * FROM Players WHERE username = %s", (get_jwt_identity(),))
         player = cursor.fetchone()
-        if str(player['team_id']) != team_id or not player['mod_start_date']: return "Not moderator of team"
+        if str(player['team_id']) != team_id or not player['mod_start_date']: return "Not moderator of team", 403
 
         # Execute actual query and return
         cursor.execute("SELECT * FROM Applications WHERE team_id = %s", (team_id, ))
@@ -49,7 +49,6 @@ def get_applications(team_id = None, username = None):
     # Collecting personal application data (with team name)
     cursor.execute("SELECT team_name, Applications.* FROM Applications NATURAL JOIN Teams WHERE creator_name = %s", (get_jwt_identity(), ))
     res = cursor.fetchall()
-    print(res)
     return jsonify(res)
 
 
@@ -66,7 +65,7 @@ def delete_application(id, team_id = None, username = None):
         cursor.execute("SELECT * FROM Players WHERE username = %s", (get_jwt_identity(),))
         player = cursor.fetchone()
 
-        if player['team_id'] != team_id or not player['mod_start_date']: return "Not moderator of team"
+        if player['team_id'] != team_id or not player['mod_start_date']: return "Not moderator of team", 403
 
         # Delete because you got rejected :/
         cursor.execute("DELETE FROM Applications where creator_name = %s AND team_id = %s AND id = %s", (username, team_id, id))

@@ -5,7 +5,7 @@ import axios from "axios"
 
 Vue.use(Vuex)
 
-let server = "http://localhost:5000"
+let server = "http://chessible.pythonanywhere.com"
 
 export default new Vuex.Store({
     state: {
@@ -56,6 +56,8 @@ export default new Vuex.Store({
         },
 
         getTeam: (state) => async (id: number) => {
+            console.log(id)
+
             let response;
             if (state.access_token == "")
                 response = await axios.get(
@@ -71,10 +73,18 @@ export default new Vuex.Store({
 
         getGame: (state) => async (id = "") => {
             let response = await axios.get(
-                server + `/teams/${id}`,
+                server + `/games/${id}`,
                 { headers: { "Authorization": `Bearer ${state.access_token}` } }
             )
-            return response
+            return response.data
+        },
+
+        getGames: (state) => async (username = "") => {
+            let response = await axios.get(
+                server + `/games/player/${username}`,
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+            return response.data
         },
 
         getPlayer: (state) => async (username: string) => {
@@ -89,6 +99,11 @@ export default new Vuex.Store({
                     { headers: { "Authorization": `Bearer ${state.access_token}` } }
                 )
 
+            return response.data;
+        },
+
+        getPlayers: (state) => async () => {
+            let response = await axios.get(server + `/player/search`)
             return response.data;
         },
 
@@ -114,6 +129,35 @@ export default new Vuex.Store({
         
     },
     actions: {
+        async kick({ state }, { username, team_id }) {
+            console.log(username, team_id)
+            const formData = new FormData()
+            formData.append('username', username)
+            formData.append('team_id', team_id)
+
+            let res = await axios.post(
+                server + '/teams/kick', 
+                formData,                 
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+
+            return res.status == 200
+        },
+
+        async makeMod({ state }, { username, team_id }) {
+            const formData = new FormData()
+            formData.append('username', username)
+            formData.append('team_id', team_id)
+
+            let res = await axios.post(
+                server + '/teams/promoMod', 
+                formData,                 
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+
+            return res.status == 200
+        },
+
         async loginPlayer({ commit, getters }, { username, password }) {
             const formData = new FormData()
             formData.append('username', username)
@@ -173,7 +217,7 @@ export default new Vuex.Store({
                 const formData = new FormData();
                 formData.append('id', id);
                 formData.append('team_id', team_id);
-                formData.append('applicant', applicant);
+                if (applicant) formData.append('applicant', applicant);
 
                 let response = await axios.post(
                     server + `/apply/delete`,
@@ -190,7 +234,7 @@ export default new Vuex.Store({
         async createTeam({state, getters, commit}, team_name) {
             const formData = new FormData();
             formData.append('team_name', team_name);
-
+            
             let response = await axios.post(
                 server + `/teams/create`,
                 formData,
@@ -202,6 +246,22 @@ export default new Vuex.Store({
             return response.data;
         },
         
+        async updateProfile({state, commit, getters}, {username, about}) {
+            const formData = new FormData();
+            formData.append('about', about);
+            
+            let response = await axios.post(
+                server + `/player/update`,
+                formData,
+                { headers: { "Authorization": `Bearer ${state.access_token}` } }
+            )
+            
+            // Update Player Information (Already updated due to v-model)
+            commit("updateCurPlayer", await getters.getPlayer(state.curPlayer.username))
+
+            return true;
+        },
+
         async quitTeamMod({state, commit, getters}, ) {
             let response = await axios.post(
                 server + `/teams/quitMod`,
