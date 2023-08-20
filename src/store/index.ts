@@ -5,7 +5,7 @@ import axios from "axios"
 
 Vue.use(Vuex)
 
-let server = "http://chessible.pythonanywhere.com"
+let server = "https://chessible.pythonanywhere.com"
 
 export default new Vuex.Store({
     state: {
